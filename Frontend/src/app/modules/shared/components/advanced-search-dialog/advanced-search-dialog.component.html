@@ -1,0 +1,78 @@
+<app-sliding-form [views]="views">
+  <ng-template [templateId]="mainId">
+    <mat-card class="!mb-2 mat-elevation-z0">
+      <mat-card-content>
+        <form [formGroup]="form" class="flex flex-col gap-1">
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>{{config.config.generic.label}}</mat-label>
+            <input matInput formControlName="generic">
+          </mat-form-field>
+          <mat-divider class="w-full"></mat-divider>
+          @if( config && config.config.fields.length > 0){
+          <h1 class="text-base font-medium">Filters</h1>
+
+          @for (field of config.config.fields; track $index) {
+
+          @if(field.type === 'text'){
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>{{ field.label }}</mat-label>
+            <input matInput [formControlName]="field.key" [placeholder]="field.placeholder ?? ''">
+          </mat-form-field>
+          }
+
+          @if(field.type === 'select'){
+          <div class="flex flex-col">
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>{{ field.label }}</mat-label>
+              <mtx-select [formControlName]="field.key" [multiple]="field.selectOptions?.multiple">
+                @for (opt of field.selectOptions?.options; track $index) {
+                <mtx-option [value]="opt.value">{{ opt.label }}</mtx-option>
+                }
+              </mtx-select>
+            </mat-form-field>
+
+            @if(field.selectOptions?.displayInclusive && field.selectOptions?.multiple){
+            <mat-radio-group formControlName="{{field.key + '_inclusive'}}">
+              <mat-radio-button [value]="true">Match Any</mat-radio-button>
+              <mat-radio-button [value]="false">Match All</mat-radio-button>
+            </mat-radio-group>
+            }
+          </div>
+          }
+
+          @if (field.type === 'dateRange') {
+          <mat-form-field>
+            <mat-label>{{field.label}}</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Start date" formControlName="{{field.key + '_start'}}">
+              <input matEndDate placeholder="End date" formControlName="{{field.key + '_end'}}">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+          }
+
+
+          @if (field.type === 'date') {
+          <mat-form-field>
+            <mtx-datetimepicker></mtx-datetimepicker>
+            <input [mtxDatetimepicker]="dateTimePickerRef[field.key]" formControlName="{{field.key}}" matInput
+              required />
+            <mtx-datetimepicker-toggle [for]="dateTimePickerRef[field.key]" matSuffix></mtx-datetimepicker-toggle>
+          </mat-form-field>
+          }
+
+
+          @if(field.type === 'checkbox'){
+          <mat-checkbox formControlName="{{field.key}}">{{ field.label }}</mat-checkbox>
+          }
+          }
+          }
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+
+</app-sliding-form>

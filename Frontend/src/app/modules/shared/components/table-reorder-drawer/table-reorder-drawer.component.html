@@ -1,0 +1,26 @@
+<div class="flex items-center justify-between sticky">
+    <app-header-group class="w-full" [headerConfig]="headerConfig" [pageButtons]="pageButtons"></app-header-group>
+</div>
+
+<div cdkDropList class="overflow-auto !h-fit" (cdkDropListDropped)="drop($event)">
+    @for (column of table.columns; track column) {
+    <div cdkDrag class="flex flex-row items-center justify-between drag-item p-2">
+
+        <div class="flex flex-row truncate items-center">
+            <div class="pr-2" cdkDragHandle>
+                <mat-icon class="cursor-move align-middle ">drag_indicator</mat-icon>
+            </div>
+            <div class="truncate pr-1" [matTooltip]="column.header?.toString()">
+                {{column.header}}
+            </div>
+        </div>
+
+        @if(!column.disabled){
+        <mat-slide-toggle class="scale-[0.7]" hideIcon="true" [(ngModel)]="column.show"
+            (change)="onToggleChange(column)">
+        </mat-slide-toggle>
+        }
+
+    </div>
+    }
+</div>

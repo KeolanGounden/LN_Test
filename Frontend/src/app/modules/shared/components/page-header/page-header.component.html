@@ -1,0 +1,49 @@
+@if(headerConfig.length === 1) {
+<div class="!text-lg text-nowrap !font-medium header-text truncate " (click)="onHeaderClick(headerConfig[0])"
+  [matTooltip]="headerConfig[0].title">
+  {{ headerConfig[0].title }}
+</div>
+@if(headerConfig[0].subtitle){
+<mat-card-subtitle>{{ headerConfig[0].subtitle }}</mat-card-subtitle>
+
+}
+}
+
+
+
+@if(headerConfig.length > 1){
+<div class="flex flex-row items-center">
+  <button mat-button [matMenuTriggerFor]="headerMenu" class="!block !pr-0">
+    <div class="flex flex-row items-center">
+      <div class="truncate !text-lg text-nowrap header-text w-full" [matTooltip]="headerConfig[0].title">{{
+        headerConfig[0].title }}</div>
+      <mat-icon iconPositionEnd class="max-w-[24px] header-text">arrow_drop_down</mat-icon>
+    </div>
+
+  </button>
+
+  @if(headerConfig[0].headerButton){
+  <app-display-button [buttonConfig]="headerConfig[0].headerButton"></app-display-button>
+  }
+</div>
+
+
+@if(headerConfig[0].subtitle){
+<mat-card-subtitle>{{ headerConfig[0].subtitle }}</mat-card-subtitle>
+}
+
+<mat-menu #headerMenu="matMenu" yPosition="below" xPosition="before" class="w-full">
+  @for (config of headerConfig; track $index) {
+  @if(config.title){
+  <button mat-menu-item (click)="onHeaderClick(config)" class="!block" [ngClass]="config.selected ? 'selected' : ''">
+    <div class="flex flex-row justify-between items-center text-nowrap">
+      <div class="px-2 truncate" [matTooltip]="config.title">
+        {{ config.title }}
+      </div>
+    </div>
+  </button>
+  }
+  }
+
+</mat-menu>
+}

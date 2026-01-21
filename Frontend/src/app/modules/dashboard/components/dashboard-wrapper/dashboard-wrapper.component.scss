@@ -1,0 +1,52 @@
+.transparent-chip-green {
+  color: var(--mat-sys-primary);
+  background-color: color-mix(in srgb, var(--mat-sys-primary), transparent 92%);
+
+}
+.transparent-chip-red {
+  color: var(--mat-sys-primary);
+  background-color: color-mix(in srgb, var(--mat-sys-primary), transparent 92%);
+
+}
+
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px; /* fully rounded */
+  font-size: 0.75rem;    /* text-xs */
+  font-weight: 600;      /* font-semibold */
+  padding: 0.25rem 0.5rem; /* py-1 px-2 */
+}
+
+// Status variants with translucent backgrounds
+.status-chip.todo {
+  color: #616161; // Gray text
+  background-color: color-mix(in srgb, #616161, transparent 85%);
+}
+
+.status-chip.in-progress {
+  color: #c2185b; // Deep pink
+  background-color: color-mix(in srgb, #c2185b, transparent 85%);
+}
+
+.status-chip.in-review {
+  color: #fb8c00; // Orange
+  background-color: color-mix(in srgb, #fb8c00, transparent 85%);
+}
+
+.status-chip.completed {
+  color: #2e7d32; // Green
+  background-color: color-mix(in srgb, #2e7d32, transparent 85%);
+}
+
+.status-chip.archived {
+  color: #6d4c41; // Brown
+  background-color: color-mix(in srgb, #6d4c41, transparent 85%);
+}
+
+.status-chip.discarded {
+  color: #d32f2f; // Red
+  background-color: color-mix(in srgb, #d32f2f, transparent 85%);
+}

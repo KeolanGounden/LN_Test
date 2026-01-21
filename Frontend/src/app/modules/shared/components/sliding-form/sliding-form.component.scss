@@ -1,0 +1,15 @@
+.custom-header {
+  margin-bottom: 0 !important;
+  padding-bottom: 0.25rem !important; 
+}
+.custom-content {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+.button-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow: hidden;
+  justify-content: flex-end;
+}

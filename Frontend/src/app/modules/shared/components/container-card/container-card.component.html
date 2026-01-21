@@ -1,0 +1,14 @@
+<mat-card class="mat-elevation-z0 w-full">
+
+    @if(loading){
+    <app-loading-skeleton [loadingType]="loadingtype"></app-loading-skeleton>
+    }
+    @else{
+    <mat-card-content class="!h-full overflow-auto !pr-0 !pt-[8px]">
+        <div class="flex flex-col w-full">
+            <ng-content></ng-content>
+        </div>
+    </mat-card-content>
+    }
+
+</mat-card>

@@ -1,0 +1,45 @@
+<div class="relative flex flex-row items-center pb-2">
+    @if(showLeft){
+    <button class="overlay-button !absolute !z-1 " mat-icon-button (click)="scrollLeft()">
+        <mat-icon class="mb-0.5">arrow_left</mat-icon>
+    </button>
+    }
+
+
+    <div #scrollContainer class="flex overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-2 pr-4 scroll-smooth">
+        @for(field of config; track field) {
+        @if (field.value !== null && field.value !== '') {
+        @if(!field.selectConfig){
+        <app-filter-chip [config]="{ key: field.key, label: field.label[0] }"
+            (filterChanged)="onFilterRemoved($event)"></app-filter-chip>
+        }
+        @else if (field.selectConfig.multiple) {
+        @for (item of field.value; track $index; let i = $index) {
+        <app-filter-chip [config]="{ key: field.key, label: field.label[i] }"
+            (filterChanged)="onFilterRemoved($event, i)">
+        </app-filter-chip>
+        }
+        }
+        @else if (!field.selectConfig.multiple) {
+        <app-filter-chip [config]="{ key: field.key, label: field.label[0] }"
+            (filterChanged)="onFilterRemoved($event)">
+        </app-filter-chip>
+        
+
+        }
+
+        }
+        }
+
+    </div>
+
+    @if(showRight){
+    <button class="overlay-button !absolute !right-0" mat-icon-button (click)="scrollRight()">
+        <mat-icon class="mb-0.5">arrow_right</mat-icon>
+    </button>
+    }
+
+
+
+
+</div>

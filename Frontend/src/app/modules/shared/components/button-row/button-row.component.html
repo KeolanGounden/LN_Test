@@ -1,0 +1,45 @@
+<div class="button-container flex flex-row" #containerRef>
+    <div class="container-ref w-full" [ngStyle]="{'justify-content': alignment}">
+        @if(buttonConfig){
+        @for(btn of visibleButtons; track btn) {
+
+        @if(btn.hide === undefined || !btn.hide()) {
+        <div #buttonRef>
+            <app-display-button [buttonConfig]="btn"></app-display-button>
+        </div>
+        }
+
+
+        }
+
+
+
+        }
+    </div>
+
+
+    @if(overflow()){
+    <div [ngStyle]="{'justify-content': alignment}">
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+    <mat-menu #moreMenu="matMenu">
+        @for (btn of overflowButtons; track $index) {
+        @if(btn.hide === undefined || !btn.hide()) {
+
+        <button mat-menu-item [disabled]="btn.disabled" (click)="btn.action()">
+            @if(btn.icon){
+            <mat-icon>{{ btn.icon }}</mat-icon>
+            }
+            @if(btn.label){
+            {{ btn.label }}
+            }
+        </button>
+        }
+        }
+
+    </mat-menu>
+    }
+</div>

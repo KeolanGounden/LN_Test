@@ -1,0 +1,94 @@
+@switch (buttonConfig.type) {
+@case(ButtonType.Basic) {
+<button mat-button [matTooltip]="buttonConfig.tooltip"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false" (click)="buttonConfig.action()">
+    @if(buttonConfig.icon){
+    <mat-icon class="!m-0">{{ buttonConfig.icon }}</mat-icon>
+    }
+    @if(buttonConfig.label){
+    <span>{{ buttonConfig.label }}</span>
+    }
+</button>
+}
+@case (ButtonType.Raised) {
+<button mat-raised-button [matTooltip]="buttonConfig.tooltip"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false" (click)="buttonConfig.action()">
+    @if(buttonConfig.icon){
+    <mat-icon class="!m-0">{{ buttonConfig.icon }}</mat-icon>
+    }
+    @if(buttonConfig.label){
+    <span>{{ buttonConfig.label }}</span>
+    }
+</button>
+}
+@case (ButtonType.Stroked) {
+<button mat-stroked-button [matTooltip]="buttonConfig.tooltip"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false" (click)="buttonConfig.action()">
+    @if(buttonConfig.icon){
+    <mat-icon class="!m-0">{{ buttonConfig.icon }}</mat-icon>
+    }
+    @if(buttonConfig.label){
+    <span>{{ buttonConfig.label }}</span>
+    }
+</button>
+}
+@case (ButtonType.Icon) {
+<button mat-icon-button [matTooltip]="buttonConfig.tooltip"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false" (click)="buttonConfig.action()">
+    @if(buttonConfig.icon){
+    <mat-icon class="!m-0">{{ buttonConfig.icon }}</mat-icon>
+    }
+</button>
+}
+@case (ButtonType.Flat) {
+<button mat-flat-button [matTooltip]="buttonConfig.tooltip"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false"
+    class="button-wrapper mat-custom-primary !min-w-auto !p-3" (click)="buttonConfig.action()">
+    @if(buttonConfig.icon){
+    <mat-icon class="!m-0">{{ buttonConfig.icon }}</mat-icon>
+    }
+</button>
+}
+@case (ButtonType.FlatWithText) {
+<button mat-flat-button [matTooltip]="buttonConfig.tooltip"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false"
+    class="button-wrapper mat-custom-primary !min-w-auto !p-3" (click)="buttonConfig.action()">
+    @if(buttonConfig.icon){
+    <mat-icon class="!m-0">{{ buttonConfig.icon }}</mat-icon>
+    }
+    @if(buttonConfig.label){
+    <span>{{ buttonConfig.label }}</span>
+    }
+</button>
+}
+@case (ButtonType.Chip) {
+<mat-chip class="self-center" [matTooltip]="buttonConfig.tooltip" (click)="buttonConfig.action()">
+    <div class="flex flex-row items-center">
+        @if(buttonConfig.icon) {
+        <mat-icon class="!mr-1 scale-85">{{buttonConfig.icon}}</mat-icon>
+        }
+        @if(buttonConfig.label) {
+        <div class="text-md">{{buttonConfig.label}}</div>
+        }
+    </div>
+</mat-chip>
+}
+@case (ButtonType.SlideToggle) {
+<mat-slide-toggle class="scale-[0.7]" hideIcon="true" (change)="buttonConfig.action()"
+    [disabled]="buttonConfig.disabled ? buttonConfig.disabled() : false">
+</mat-slide-toggle>
+}
+@case (ButtonType.Badge) {
+<mat-chip class="self-center scale-75" [matTooltip]="buttonConfig.tooltip" (click)="buttonConfig.action()">
+    <div class="flex flex-row items-center">
+        @if(buttonConfig.icon) {
+        <mat-icon class="!mr-1 scale-85">{{buttonConfig.icon}}</mat-icon>
+        }
+        @if(buttonConfig.label) {
+        <div class="text-md">{{buttonConfig.label}}</div>
+        }
+    </div>
+</mat-chip>
+}
+
+}

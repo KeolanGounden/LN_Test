@@ -1,0 +1,13 @@
+.button-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow: hidden;
+  align-items: baseline;
+}
+
+.transparent-chip {
+  color: var(--mat-sys-primary);
+  background-color: color-mix(in srgb, var(--mat-sys-primary), transparent 92%);
+
+}

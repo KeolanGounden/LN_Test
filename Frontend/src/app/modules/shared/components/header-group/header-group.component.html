@@ -1,0 +1,148 @@
+@if(showPageButtons){
+@if(headerConfig || pageButtons.length > 0){
+<div class="flex flex-row justify-between items-center">
+
+
+    @if(headerConfig){
+
+    <div class="w-full">
+        <app-page-header [headerConfig]="headerConfig"></app-page-header>
+
+    </div>
+
+    }
+
+    @if(pageButtons){
+    <div class="w-3/5 pr-2">
+        <app-button-row [buttonConfig]="pageButtons"></app-button-row>
+    </div>
+
+    }
+</div>
+
+}
+
+
+@if(config || actionButtons.length > 0){
+<div class="flex flex-row items-center justify-between">
+
+
+    @if(config){
+    <div class="max-w-2/5 w-2/5 pl-4">
+
+        <app-search-bar [config]="config" (queryChanged)="searchQueryChanged($event)" [searchQuery]="searchQuery"
+            [displayFilterList]="displayFilterList"></app-search-bar>
+    </div>
+    }
+    @if(actionButtons){
+    <div class="max-w-3/5 w-3/5 pr-2">
+
+        <app-button-row [buttonConfig]="actionButtons"></app-button-row>
+    </div>
+    }
+</div>
+}
+
+
+}
+
+
+@if(!showPageButtons){
+<div class="flex flex-col">
+    <div class="flex flex-row w-full justify-between items-center">
+        @if(headerConfig){
+        <app-page-header [headerConfig]="headerConfig"></app-page-header>
+        }
+
+
+        @if((pageButtons.length || actionButtons.length) && (config === undefined || config === null)){
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu" class="!p-2">
+            @if(pageButtons.length){
+            <mat-card-subtitle>Page Actions</mat-card-subtitle>
+            }
+
+
+
+            @for (item of pageButtons; track item) {
+            <button mat-menu-item (click)="item.action()">
+                <mat-icon>{{item.icon}}</mat-icon>
+                <span>{{item.label}}</span>
+            </button>
+            }
+
+            @if(pageButtons.length && actionButtons.length){
+            <mat-divider class="px-1 sub-divider"></mat-divider>
+            }
+
+
+            @if(actionButtons.length){
+            <mat-card-subtitle>Table Actions</mat-card-subtitle>
+            }
+
+            @for (item of actionButtons; track item) {
+            <button mat-menu-item (click)="item.action()">
+                <mat-icon>{{item.icon}}</mat-icon>
+                <span>{{item.label}}</span>
+            </button>
+            }
+        </mat-menu>
+        }
+
+
+    </div>
+
+    <div class="flex flex-row w-full justify-between pr-2">
+        @if(config){
+        <div class="pl-4 max-w-[80%]">
+
+            <app-search-bar [config]="config" (queryChanged)="searchQueryChanged($event)" [searchQuery]="searchQuery"
+                [displayFilterList]="displayFilterList"></app-search-bar>
+        </div>
+
+
+
+        }
+
+        @if((pageButtons.length || actionButtons.length) && config){
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu" class="!p-2">
+            @if(pageButtons.length){
+            <mat-card-subtitle>Page Actions</mat-card-subtitle>
+            }
+
+
+
+            @for (item of pageButtons; track item) {
+            <button mat-menu-item (click)="item.action()">
+                <mat-icon>{{item.icon}}</mat-icon>
+                <span>{{item.label}}</span>
+            </button>
+            }
+
+            @if(pageButtons.length && actionButtons.length){
+            <mat-divider class="px-1 sub-divider"></mat-divider>
+            }
+
+
+            @if(actionButtons.length){
+            <mat-card-subtitle>Table Actions</mat-card-subtitle>
+            }
+
+            @for (item of actionButtons; track item) {
+            <button mat-menu-item (click)="item.action()">
+                <mat-icon>{{item.icon}}</mat-icon>
+                <span>{{item.label}}</span>
+            </button>
+            }
+        </mat-menu>
+        }
+    </div>
+</div>
+}

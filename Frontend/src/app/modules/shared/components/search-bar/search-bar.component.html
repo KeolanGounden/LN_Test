@@ -1,0 +1,98 @@
+<form [formGroup]="searchForm" class="flex items-center w-full pr-2">
+
+  <div class="hidden md:flex w-full">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{config?.generic?.label}}</mat-label>
+      <input matInput formControlName="term" placeholder="{{config?.generic?.placeholder}}" />
+      <mat-icon matPrefix>search</mat-icon>
+
+      <div class="flex flex-row gap-1 items-center" matSuffix>
+        <div class="w-[24px]" matSuffix>
+          @if(searchForm.controls.term.value){
+          <button class="cursor-pointer" type="button" mat-icon-button (click)="clearSearch()">
+            <mat-icon mat-icon-button>close</mat-icon>
+          </button>
+          }
+
+        </div>
+
+        <mat-divider [vertical]="true" class="w-1 h-[24px] border-[#c4c6d0] pl-4"></mat-divider>
+
+        @if (filterTemplate) {
+        <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+        }
+        @else {
+        <button class="pr-2.5 pl-1 cursor-pointer" type="button" mat-icon-button matSuffix
+          (click)="openAdvancedDialog()">
+          <mat-icon>filter_list</mat-icon>
+        </button>
+        }
+      </div>
+
+    </mat-form-field>
+  </div>
+
+
+  <div class="flex md:hidden w-full items-baseline gap-2">
+
+    <div class="w-full animate-fade-in" [hidden]="!isSearchOpen" #searchContainer>
+      <mat-form-field class="!rounded-xl" subscriptSizing="dynamic">
+        <mat-label>{{config?.generic?.label}}</mat-label>
+        <input #searchInput matInput formControlName="term" placeholder="{{config?.generic?.placeholder}}"
+          (blur)="closeSearchInput($event)" (keydown)="onKeyDown($event)" />
+        <mat-icon matPrefix>search</mat-icon>
+
+        <div class="flex flex-row gap-1 items-center" matSuffix>
+
+          <div class="w-[24px]" matSuffix>
+            @if(searchForm.controls.term.value){
+            <button class="cursor-pointer" type="button" mat-icon-button (click)="clearSearch()">
+              <mat-icon mat-icon-button>close</mat-icon>
+            </button>
+            }
+
+          </div>
+
+          <mat-divider [vertical]="true" class="w-1 h-[24px] border-[#c4c6d0] pl-4"></mat-divider>
+
+
+          @if (filterTemplate) {
+          <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+          }
+          @else {
+          <button class="pr-2.5 pl-1 cursor-pointer" type="button" mat-icon-button matSuffix
+            (click)="openAdvancedDialog()">
+            <mat-icon>filter_list</mat-icon>
+          </button>
+          }
+        </div>
+      </mat-form-field>
+    </div>
+
+    <div class="flex items-baseline gap-2" [hidden]="isSearchOpen">
+      <button mat-icon-button (click)="openSearchInput(searchInput)">
+        <mat-icon>search</mat-icon>
+      </button>
+      @if (filterTemplate) {
+      <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>
+      }
+      @else {
+      <button class="pr-2.5 pl-1" type="button" mat-icon-button matSuffix (click)="openAdvancedDialog()">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      }
+    </div>
+  </div>
+</form>
+
+@if(displayFilterList){
+@if(searchQuery?.advancedSearchQuery?.length != undefined)
+{
+@if(searchQuery && searchQuery.advancedSearchQuery != undefined && searchQuery.advancedSearchQuery.length != undefined
+&& searchQuery.advancedSearchQuery.length > 0){
+<app-filter-chip-row [config]="searchQuery.advancedSearchQuery"
+  (filterChanged)="filterRemoved($event)"></app-filter-chip-row>
+}
+}
+
+}

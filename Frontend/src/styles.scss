@@ -1,0 +1,126 @@
+@use '@angular/material' as mat;
+@use '@ng-matero/extensions' as mtx;
+@use './themes/styles_theme-colors' as mfl_colors;
+@use './themes/mayz_theme-colors' as mayz_colors;
+
+@use "tailwindcss" as *;
+
+
+
+.default-theme{
+  color-scheme: light;
+  @include mat.theme((
+    color: (
+    primary: mfl_colors.$primary-palette,
+    tertiary:mfl_colors.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density:0
+  ));
+}
+
+
+.mayz-theme {
+  @include mat.theme((
+    color: (
+    primary: mayz_colors.$primary-palette,
+    tertiary:mayz_colors.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+
+.light-mode
+{
+    color-scheme: light;
+}
+
+.dark-mode
+{
+    color-scheme: dark;
+}
+
+.system-mode
+{
+    color-scheme: light dark;
+}
+
+html {
+  height: 100%;
+   margin: 0; /* Remove default body margin */
+  padding: 0; /* Remove default body padding */
+  @include mat.form-field-density(-3);
+}
+
+body {
+  height: 100%;
+   margin: 0; /* Remove default body margin */
+  padding: 0; /* Remove default body padding */
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+
+}
+
+
+.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field .mdc-notched-outline__notch {
+  border-right-style: hidden;
+
+}
+.mat-mdc-form-field 
+{
+  display: flex !important;
+  padding-bottom: 5px !important;
+  padding-top: 3px !important;
+}
+.mat-mdc-input-element {
+  box-shadow: none !important;
+}
+
+.mat-container-color
+{
+  background-color: var(--mat-sys-surface-container) !important;
+}
+
+.mat-primary-color{
+  color: var(--mat-sys-primary)!important; 
+}
+
+.mat-on-tertiary-color{
+  color: var(--mat-sys-on-tertiary-container)!important; 
+}
+
+.mat-card-elevation
+{
+ @include mat.card-overrides((
+    elevated-container-elevation:0 
+  ));
+}
+
+.mat-compact-dense-field {
+  @include mat.form-field-density(-3); 
+}
+
+.mat-normal-dense-field {
+  @include mat.form-field-density(0); 
+}
+
+.mat-compact-slide-toggle{
+  @include mat.slide-toggle-density(-3);
+}
+
+@for $i from 0 through 24 {
+    mat-card.mat-elevation-z#{$i} {
+        @include mat.elevation($i);
+    }
+}
+
+@for $i from 0 through 24 {
+  .mat-elevation-z#{$i} {
+    @include mat.elevation($i);
+  }
+}
+
+

@@ -1,0 +1,101 @@
+<div class="flex items-center justify-center  overflow-x-hidden w-full h-full ">
+  @for(view of views; track view; let i = $index){
+  <div [@slideAnimation]="currentViewIndex === i ? 'active' : 'inactive'" [class.hidden]="currentViewIndex !== i"
+    class="w-full">
+
+    <!-- View Header -->
+    @if(view.title){
+    <div class="flex flex-row items-center justify-between pt-5 pb-2">
+      <div class="w-full flex-shrink">
+        <div class=" !text-xl text-nowrap !font-medium truncate flex flex-row items-center w-full gap-2">
+
+          <div class="flex items-center !pl-4">
+            @if(currentViewIndex > 0){
+            <button mat-icon-button (click)="prevView()">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <span class="!pl-1 !pt-[2px]">{{ view.title }}</span>
+            }
+            @else{
+            <span class="pl-2">{{ view.title }}</span>
+            }
+
+          </div>
+
+          @if(view.titleButton){
+          <div class="w-full">
+            <app-display-button class="w-full" [buttonConfig]="view.titleButton"></app-display-button>
+
+          </div>
+
+          }
+
+        </div>
+      </div>
+
+
+      <!-- Header Action Buttons -->
+
+      <div class="flex flex-row justify-end flex-grow w-full">
+        @if(view.headerButtons){
+        <app-button-row class="w-full !content-end" [buttonConfig]="view.headerButtons"></app-button-row>
+        }
+
+      </div>
+
+    </div>
+
+
+    }
+
+
+    <mat-dialog-content class="overflow-hidden custom-content">
+      @if(currentTemplate){
+      <ng-container [ngTemplateOutlet]="currentTemplate"></ng-container>
+      }
+    </mat-dialog-content>
+
+    @if(view.buttons){
+    <mat-dialog-actions>
+
+      @for(button of view.buttons; track button) {
+      @if(button.hide !== undefined && button.hide()){
+
+      }
+      @else {
+      @switch (button.type) {
+      @case('basic') {
+      <button mat-button (click)="handleButtonAction(button)"
+        [disabled]="button?.disabled !=undefined ? button?.disabled() : false" [ngClass]="{
+          'mat-custom-primary' : button.color === 'primary',
+          'mat-custom-accent' : button.color === 'accent',
+          'mat-custom-warn' : button.color === 'warn'}"> {{ button.text }} </button>
+      }
+      @case ('flat') {
+      <button mat-flat-button (click)="handleButtonAction(button)"
+        [disabled]="button?.disabled !=undefined ? button?.disabled() : false" [ngClass]="{
+          'mat-custom-primary' : button.color === 'primary',
+          'mat-custom-accent' : button.color === 'accent',
+          'mat-custom-warn' : button.color === 'warn'}"> {{ button.text }} </button>
+      }
+      @case('raised'){
+      <button mat-raised-button (click)="handleButtonAction(button)"
+        [disabled]="button?.disabled !=undefined ? button?.disabled() : false" [ngClass]="{
+        'mat-custom-primary' : button.color === 'primary',
+        'mat-custom-accent' : button.color === 'accent',
+        'mat-custom-warn' : button.color === 'warn'}"> {{ button.text }} </button>
+      }
+      @default {}
+      }
+      }
+      }
+
+
+    </mat-dialog-actions>
+    }
+    <!-- View Buttons -->
+
+  </div>
+  }
+
+</div>

@@ -1,0 +1,11 @@
+.header-text{
+  color: var(--mat-sys-on-surface);
+}
+
+.menu-overlay-pane{
+  width: inherit !important;
+}
+
+.selected {
+background-color: var(--mat-list-active-indicator-color, var(--mat-sys-secondary-container)) !important;
+}

@@ -1,0 +1,62 @@
+<div class="flex flex-col h-screen">
+
+    <div #headerRef>
+        <app-header-group [headerConfig]="headerConfig" [config]="searchConfig" [searchQuery]="searchQuery"
+            [pageButtons]="pageButtons" [actionButtons]="actionButtons" (queryChanged)="getFilteredData($event)"
+            [displayFilterList]="true"></app-header-group>
+
+    </div>
+
+    <span class="mat-card-elevation flex-1 !pr-3 pl-4">
+
+        <mtx-grid #table [style.height]="gridHeight" [data]="list" [columns]="columns" [pageOnFront]="false" [cellSelectable]="false"
+            [length]="(takealotContentCount$ | async) ?? 0" [pageIndex]="queryParams.pageNumber ?? 0"
+            [pageSize]="queryParams.pageSize ?? 0" [loading]="loading$ | async" [pageSizeOptions]="[25, 50, 100]"
+            (page)="getNextPage($event)" [cellTemplate]="gridTemplate">
+        </mtx-grid>
+
+        <ng-template #linkTemplate let-row>
+            <a class="no-underline mat-primary-color text-nowrap hover:underline" href="{{row.url}}"
+                routerLinkActive="true" target="_blank">{{row.url}}</a>
+        </ng-template>
+
+        <ng-template #statusTemplate let-row>
+
+            @if(row?.inStock === true)
+            {
+            <span class="status-chip completed text-nowrap">
+                In Stock
+            </span>
+            }
+            @else
+            {
+            <span class="status-chip discarded text-nowrap">
+                Out of Stock
+            </span>
+
+            }
+
+
+        </ng-template>
+
+        <ng-template #actionTemplate let-row>
+                <button [matMenuTriggerFor]="rowMenu" class="cursor-pointer">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #rowMenu="matMenu">
+                    <button mat-menu-item (click)="openViewDialog(row)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item (click)="openGraphDialog(row)"> 
+                        <mat-icon>bar_chart</mat-icon>
+                        <span>Graph</span>
+                    </button>
+                   
+                </mat-menu>
+            </ng-template>
+
+    </span>
+
+
+</div>
