@@ -4,7 +4,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ContentHeaderConfig } from '../../models/header-config.model';
-import { CommonModule } from '@angular/common';
+
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ButtonConfig } from '../../models/button-config.model';
 import { ButtonRowComponent } from "../button-row/button-row.component";
@@ -12,7 +12,7 @@ import { DisplayButtonComponent } from "../display-button/display-button.compone
 
 @Component({
   selector: 'app-content-header',
-  imports: [MatCardModule, ButtonRowComponent, MatChipsModule, MatIconModule, MatMenuModule, CommonModule, MatTooltipModule, ButtonRowComponent, DisplayButtonComponent],
+  imports: [MatCardModule, ButtonRowComponent, MatChipsModule, MatIconModule, MatMenuModule, MatTooltipModule, ButtonRowComponent, DisplayButtonComponent],
   templateUrl: './content-header.component.html',
   styleUrl: './content-header.component.scss'
 })

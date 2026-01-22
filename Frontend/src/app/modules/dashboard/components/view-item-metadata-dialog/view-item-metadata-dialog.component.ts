@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, TemplateRef, ViewChild } from '@angular/core';
-import { CommonModule, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { SlidingFormComponent } from '../../../shared/components/sliding-form/sliding-form.component';
 import { SlidingFormConfig } from '../../../shared/models/sliding-form-config';
 import { ButtonAction, SlidingDialogActionButtonConfig } from '../../../shared/models/sliding-dialog-action-button-config';
@@ -27,7 +27,6 @@ import { MatNativeDateModule } from '@angular/material/core';
   selector: 'app-view-item-metadata-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatMenuModule,
@@ -45,7 +44,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     TemplateIdDirective,
     MatNativeDateModule,
     MtxDatetimepickerModule
-  ],
+],
   templateUrl: './view-item-metadata-dialog.component.html',
   styleUrls: ['./view-item-metadata-dialog.component.scss'],
   providers: [provideNativeDatetimeAdapter()]

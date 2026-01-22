@@ -12,7 +12,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MtxGridModule } from '@ng-matero/extensions/grid';;
 import { PageHeaderComponent } from '../page-header/page-header.component';
-import { CommonModule } from '@angular/common';
+
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDivider, MatDividerModule } from "@angular/material/divider";
@@ -21,7 +21,7 @@ import { ButtonRowComponent } from '../button-row/button-row.component';
 
 @Component({
   selector: 'app-header-group',
-  imports: [ButtonRowComponent, MatButtonModule, MatDividerModule, MatMenuModule, CommonModule, MatTableModule, MatIconModule, MtxGridModule, MatCardModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, PageHeaderComponent, SearchBarComponent, MatDivider],
+  imports: [ButtonRowComponent, MatButtonModule, MatDividerModule, MatMenuModule, MatTableModule, MatIconModule, MtxGridModule, MatCardModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, PageHeaderComponent, SearchBarComponent, MatDivider],
   templateUrl: './header-group.component.html',
   styleUrl: './header-group.component.scss'
 })

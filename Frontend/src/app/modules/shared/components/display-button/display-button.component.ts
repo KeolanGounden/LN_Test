@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -10,7 +10,7 @@ import { ButtonConfig, ButtonType } from '../../models/button-config.model';
 
 @Component({
   selector: 'app-display-button',
-  imports: [MatButtonModule, MatSlideToggleModule, MatIconModule, MatTooltipModule, MatMenuModule, MatChipsModule, CommonModule],
+  imports: [MatButtonModule, MatSlideToggleModule, MatIconModule, MatTooltipModule, MatMenuModule, MatChipsModule],
 
   templateUrl: './display-button.component.html',
   styleUrl: './display-button.component.scss'

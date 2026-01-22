@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-filter-chip',
-  imports: [MatChipsModule, MatIconModule, CommonModule],
+  imports: [MatChipsModule, MatIconModule],
   templateUrl: './filter-chip.component.html',
   styleUrl: './filter-chip.component.scss'
 })

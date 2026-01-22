@@ -1,14 +1,14 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FilterChipComponent } from '../filter-chip/filter-chip.component';
 import { MatChipsModule } from '@angular/material/chips';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AdvancedSearchQuery, FilterRemovedEvent } from '../../models/advanced-search-config.model';
 
 @Component({
   selector: 'app-filter-chip-row',
-  imports: [FilterChipComponent, MatChipsModule, CommonModule, MatButtonModule, MatIconModule],
+  imports: [FilterChipComponent, MatChipsModule, MatButtonModule, MatIconModule],
   templateUrl: './filter-chip-row.component.html',
   styleUrl: './filter-chip-row.component.scss'
 })

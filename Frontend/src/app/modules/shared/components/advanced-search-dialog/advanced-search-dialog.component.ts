@@ -5,7 +5,7 @@ import { AdvancedSearchDialogData } from '../../models/advanced-search-config.mo
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { SlidingFormComponent } from '../sliding-form/sliding-form.component';
@@ -23,7 +23,7 @@ import { TemplateIdDirective } from '../../directives/template-id-directive.dire
 
 @Component({
   selector: 'app-advanced-search-dialog',
-  imports: [MatCheckboxModule, MatNativeDateModule, MtxDatetimepickerModule, MatDatepickerModule, MatRadioModule, MatCardModule, SlidingFormComponent, TemplateIdDirective, MtxSelectModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatIconModule, CommonModule, MatDialogModule, MatDialogModule, MatButtonModule, MatDividerModule],
+  imports: [MatCheckboxModule, MatNativeDateModule, MtxDatetimepickerModule, MatDatepickerModule, MatRadioModule, MatCardModule, SlidingFormComponent, TemplateIdDirective, MtxSelectModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatIconModule, MatDialogModule, MatDialogModule, MatButtonModule, MatDividerModule],
   providers: [provideNativeDateAdapter(), provideNativeDatetimeAdapter(), DatePipe,],
   templateUrl: './advanced-search-dialog.component.html',
   styleUrl: './advanced-search-dialog.component.scss'
