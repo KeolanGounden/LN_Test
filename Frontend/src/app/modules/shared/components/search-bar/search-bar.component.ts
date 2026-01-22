@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, input, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, input, Input, OnInit, Output, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-search-bar',
   imports: [FilterChipRowComponent, MatDividerModule, CommonModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatIconModule, MatDialogModule, MatChipsModule, MatButtonModule],
   templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.scss'
+  styleUrls: ['./search-bar.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SearchBarComponent implements OnInit {
 
