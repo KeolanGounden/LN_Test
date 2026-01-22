@@ -19,7 +19,6 @@ import { ContentHeaderComponent } from '../../../shared/components/content-heade
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from '@angular/material/icon';
-import { HELP_SECTIONS } from '../../../../constants/dokuwiki-id';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { provideNativeDatetimeAdapter } from '@ng-matero/extensions/core';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -53,7 +52,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 })
 export class ViewItemMetadataDialogComponent {
 
-  HELP_SECTIONS = HELP_SECTIONS;
 
   item: TakealotContentResponse;
   @ViewChild(SlidingFormComponent) slidingForm!: SlidingFormComponent;
@@ -224,23 +222,12 @@ export class ViewItemMetadataDialogComponent {
       title: "Edit Rules",
       buttons: this.editButtons,
       headerButtons: [this.enableRules],
-      helpTooltip: {
-        pageurl: HELP_SECTIONS.USER_MANUAL_ALERTS.PAGE_URL,
-        externalLink: HELP_SECTIONS.USER_MANUAL_ALERTS.EXTERNAL_LINK,
-        sectionId: HELP_SECTIONS.USER_MANUAL_ALERTS.SECTIONS.OVERVIEW,
-        linkText: "Help"
-      }
+    
     },
     {
       name: 'schedules',
       title: "Edit Schedules",
       buttons: this.schedulesButtons,
-      helpTooltip: {
-        pageurl: HELP_SECTIONS.USER_MANUAL_ALERTS.PAGE_URL,
-        externalLink: HELP_SECTIONS.USER_MANUAL_ALERTS.EXTERNAL_LINK,
-        sectionId: HELP_SECTIONS.USER_MANUAL_ALERTS.SECTIONS.OVERVIEW,
-        linkText: "Help"
-      }
     }
   ];
 

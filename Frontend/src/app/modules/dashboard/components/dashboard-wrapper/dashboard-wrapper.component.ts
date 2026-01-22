@@ -1,11 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MtxGrid, MtxGridCellTemplate, MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
-import { DashboardState } from '../../states/dashboard.state';
-import { Store } from '@ngxs/store';
+import { DashboardService } from '../../states/dashboard.state';
 import { Observable } from 'rxjs';
 import { TakealotContentResponse, TakealotSearchRequest } from '../../../ct-client';
 import { AsyncPipe } from '@angular/common';
-import { ClearDashboardState, SearchTakealotContent } from '../../actions/dashboard.action';
 import { PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
 import { HeaderGroupComponent } from '../../../shared/components/header-group/header-group.component';
@@ -17,7 +15,6 @@ import { TableReorderDrawerComponent } from '../../../shared/components/table-re
 import { MatDialog } from '@angular/material/dialog';
 import { ViewItemMetadataDialogComponent } from '../view-item-metadata-dialog/view-item-metadata-dialog.component';
 import { Router } from '@angular/router';
-import { HubConnectionState } from '@microsoft/signalr';
 import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import {MatButtonModule} from '@angular/material/button';
@@ -137,20 +134,20 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
     advancedSearchQuery: []
   }
 
-  constructor(private _store: Store, private cdr: ChangeDetectorRef, private drawer: MtxDrawer, private dialog: MatDialog, private _ngZone: NgZone, private _router: Router) {
-    this._store.dispatch(new SearchTakealotContent({
+  constructor(private dashboardService: DashboardService, private cdr: ChangeDetectorRef, private drawer: MtxDrawer, private dialog: MatDialog, private _ngZone: NgZone, private _router: Router) {
+    this.dashboardService.search({
       name: "",
       pageNumber: 0,
       pageSize: 25
-    }))
+    })
 
   }
 
 
 
-  loading$: Observable<boolean | undefined> = this._store.select(DashboardState.isLoading)
-  takealotContentCount$: Observable<number> = this._store.select(DashboardState.GetTakealotContentCount)
-  takealotContent$: Observable<TakealotContentResponse[] | undefined | null> = this._store.select(DashboardState.GetTakealotContent)
+  loading$: Observable<boolean> = this.dashboardService.isLoading$
+  takealotContentCount$: Observable<number> = this.dashboardService.takealotTotalCount$
+  takealotContent$: Observable<TakealotContentResponse[] | undefined | null> = this.dashboardService.takealotItems$
 
   id: TakealotKeys = 'id';
   name: TakealotKeys = 'name';
@@ -254,7 +251,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnDestroy() {
-    this._store.dispatch(new ClearDashboardState());
+    this.dashboardService.clear();
 
   }
 
@@ -302,8 +299,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
 
 
     this.searchQuery = event
-
-    this._store.dispatch(new SearchTakealotContent(request))
+    this.dashboardService.search(request)
   }
 
   openViewDialog(rowData: TakealotContentResponse)
