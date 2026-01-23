@@ -24,7 +24,7 @@
           <div class="flex flex-col">
             <mat-form-field class="w-full" appearance="outline">
               <mat-label>{{ field.label }}</mat-label>
-              <mtx-select [formControlName]="field.key" [multiple]="field.selectOptions?.multiple">
+              <mtx-select [formControlName]="field.key" [multiple]="field.selectOptions?.multiple" appendTo="body">
                 @for (opt of field.selectOptions?.options; track $index) {
                 <mtx-option [value]="opt.value">{{ opt.label }}</mtx-option>
                 }
