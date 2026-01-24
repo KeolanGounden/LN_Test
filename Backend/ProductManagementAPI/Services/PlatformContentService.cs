@@ -228,7 +228,17 @@ namespace ProductManagementAPI.Services
             // If no name provided, fall back to database paging
             if (string.IsNullOrWhiteSpace(request.Name))
             {
-                var result = query.OrderBy(x => x.ProductIdentifier).Select(e => new TakealotContentResponse()
+                // apply sorting to the database query according to request.SortBy / request.Descending
+                query = request.SortBy?.ToLowerInvariant() switch
+                {
+                    "name" => request.Descending ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
+                    "lastupdated" => request.Descending ? query.OrderByDescending(x => x.LastUpdated) : query.OrderBy(x => x.LastUpdated),
+                    "productidentifier" => request.Descending ? query.OrderByDescending(x => x.ProductIdentifier) : query.OrderBy(x => x.ProductIdentifier),
+                    "instock" => request.Descending ? query.OrderByDescending(x => x.InStock) : query.OrderBy(x => x.InStock),
+                    _ => request.Descending ? query.OrderByDescending(x => x.ProductIdentifier) : query.OrderBy(x => x.ProductIdentifier),
+                };
+
+                var result = query.Select(e => new TakealotContentResponse()
                 {
                     Id = e.Id,
                     Name = e.Name,
@@ -257,6 +267,56 @@ namespace ProductManagementAPI.Services
 
             // use injected search engine instance: perform non-mutating search against candidates to avoid rebuilding engine state
             var searchResults = _searchEngine.Search(candidates, request.Name ?? string.Empty, maxResults: candidates.Count()).ToList();
+
+            // sort in-memory results: primary by score desc, then by requested sort field (or IComparable fallback)
+            searchResults.Sort((a, b) =>
+            {
+                var scoreCmp = b.Score.CompareTo(a.Score); // higher score first
+                if (scoreCmp != 0) return scoreCmp;
+
+                // tie-breaker using request.SortBy
+                var sortBy = request.SortBy?.ToLowerInvariant();
+                var desc = request.Descending;
+
+                int fieldCmp = 0;
+                switch (sortBy)
+                {
+                    case "name":
+                        fieldCmp = string.Compare(a.Item?.Name, b.Item?.Name, StringComparison.OrdinalIgnoreCase);
+                        break;
+                    case "lastupdated":
+                        DateTime? aDate = a.Item?.LastUpdated;
+                        DateTime? bDate = b.Item?.LastUpdated;
+                        if (aDate == bDate) fieldCmp = 0;
+                        else if (aDate == null) fieldCmp = -1;
+                        else if (bDate == null) fieldCmp = 1;
+                        else fieldCmp = aDate.Value.CompareTo(bDate.Value);
+                        break;
+                    case "productidentifier":
+                        fieldCmp = string.Compare(a.Item?.ProductIdentifier, b.Item?.ProductIdentifier, StringComparison.OrdinalIgnoreCase);
+                        break;
+                    case "instock":
+                        fieldCmp = a.Item.InStock.CompareTo(b.Item.InStock);
+                        break;
+                    default:
+                        // try IComparable fallback on the entity
+                        if (a.Item is IComparable<PlatformContentTakealotEntity> && b.Item is PlatformContentTakealotEntity)
+                        {
+                            fieldCmp = ((IComparable<PlatformContentTakealotEntity>)a.Item).CompareTo(b.Item);
+                        }
+                        else if (a.Item is IComparable && b.Item is IComparable)
+                        {
+                            fieldCmp = ((IComparable)a.Item).CompareTo(b.Item);
+                        }
+                        else
+                        {
+                            fieldCmp = string.Compare(a.Item?.ToString(), b.Item?.ToString(), StringComparison.OrdinalIgnoreCase);
+                        }
+                        break;
+                }
+
+                return desc ? -fieldCmp : fieldCmp;
+            });
 
             var total = searchResults.Count;
 

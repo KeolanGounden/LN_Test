@@ -29,6 +29,11 @@ services.AddControllers();
 services.AddScoped<IPlatformContentService, PlatformContentService>();
 // register product search engine as open-generic for DI
 services.AddTransient(typeof(IProductSearchEngine<>), typeof(ProductSearchEngine<>));
+// repositories
+services.AddScoped<ProductManagementAPI.Interfaces.IProductRepository, ProductManagementAPI.Repositories.ProductRepository>();
+services.AddSingleton<ProductManagementAPI.Interfaces.ICategoryRepository, ProductManagementAPI.Repositories.CategoryRepository>();
+// services
+services.AddScoped<ProductManagementAPI.Interfaces.ICategoryService, ProductManagementAPI.Services.CategoryService>();
 // categories
 services.AddSingleton<ProductManagementAPI.Interfaces.ICategoryService, ProductManagementAPI.Services.CategoryService>();
 

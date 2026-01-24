@@ -9,39 +9,36 @@ namespace ProductManagementAPI.Services
 {
     public class CategoryService : ICategoryService
     {
-        // in-memory store
-        private readonly ConcurrentDictionary<Guid, CategoryDto> _store = new();
+        private readonly ICategoryRepository _repo;
 
-        public CategoryService()
+        public CategoryService(ICategoryRepository repo)
         {
-            // seed with some categories
-            var root = new CategoryDto(Guid.NewGuid(), "Root", null, null);
-            _store[root.Id] = root;
+            _repo = repo;
         }
 
         public CategoryDto Create(CreateCategoryRequest req)
         {
             var id = Guid.NewGuid();
             var dto = new CategoryDto(id, req.Name, req.Description, req.ParentCategoryId);
-            _store[id] = dto;
+            _repo.AddAsync(dto).GetAwaiter().GetResult();
             return dto;
         }
 
         public IEnumerable<CategoryDto> GetAll()
         {
-            return _store.Values.OrderBy(c => c.Name);
+            return _repo.GetAllAsync().GetAwaiter().GetResult().OrderBy(c => c.Name);
         }
 
         public CategoryDto? Get(Guid id)
         {
-            return _store.TryGetValue(id, out var c) ? c : null;
+            return _repo.GetByIdAsync(id).GetAwaiter().GetResult();
         }
 
         public IEnumerable<CategoryTreeDto> GetTree()
         {
-            var dict = _store.Values.ToDictionary(c => c.Id, c => new CategoryTreeDto(c.Id, c.Name, c.Description, c.ParentCategoryId, new List<CategoryTreeDto>()));
+            var all = _repo.GetAllAsync().GetAwaiter().GetResult();
+            var dict = all.ToDictionary(c => c.Id, c => new CategoryTreeDto(c.Id, c.Name, c.Description, c.ParentCategoryId, new List<CategoryTreeDto>()));
 
-            // build parent-child
             foreach (var node in dict.Values)
             {
                 if (node.ParentCategoryId != null && dict.TryGetValue(node.ParentCategoryId.Value, out var parent))
@@ -50,7 +47,6 @@ namespace ProductManagementAPI.Services
                 }
             }
 
-            // roots
             return dict.Values.Where(n => n.ParentCategoryId == null).ToList();
         }
     }

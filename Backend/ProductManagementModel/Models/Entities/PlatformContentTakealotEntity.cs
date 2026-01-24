@@ -14,7 +14,7 @@ namespace ChangeTrackerModel.Models.Entities
     [Index(nameof(ProductIdentifier), IsUnique = true)]
     [Index(nameof(Name))]
     [Index(nameof(LastUpdated))]
-    public class PlatformContentTakealotEntity
+    public class PlatformContentTakealotEntity : IComparable<PlatformContentTakealotEntity>, IComparable
     {
         [Column("id")]
         public Guid Id { get; set; }
@@ -61,6 +61,34 @@ namespace ChangeTrackerModel.Models.Entities
 
             }
             set { MetaRaw = value == null ? JsonSerializer.Serialize(new TakealotProductDetails()) : JsonSerializer.Serialize(value); }
+        }
+
+        // Custom comparison: prefer in-stock items, then by Name (case-insensitive), then by ProductIdentifier
+        public int CompareTo(PlatformContentTakealotEntity? other)
+        {
+            if (other is null) return 1;
+
+            // In-stock first
+            if (InStock && !other.InStock) return -1;
+            if (!InStock && other.InStock) return 1;
+
+            // compare names (null-safe)
+            var nameA = Name ?? string.Empty;
+            var nameB = other.Name ?? string.Empty;
+            var nameCmp = string.Compare(nameA, nameB, StringComparison.OrdinalIgnoreCase);
+            if (nameCmp != 0) return nameCmp;
+
+            // fallback to product identifier
+            var idA = ProductIdentifier ?? string.Empty;
+            var idB = other.ProductIdentifier ?? string.Empty;
+            return string.Compare(idA, idB, StringComparison.OrdinalIgnoreCase);
+        }
+
+        int IComparable.CompareTo(object? obj)
+        {
+            if (obj is PlatformContentTakealotEntity other)
+                return CompareTo(other);
+            throw new ArgumentException("Object is not a PlatformContentTakealotEntity");
         }
 
     }

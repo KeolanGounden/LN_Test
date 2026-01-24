@@ -30,6 +30,13 @@ namespace ProductManagementAPI.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] CreateCategoryRequest req)
         {
+            if (req is null)
+                return BadRequest("Request body is required.");
+
+            // pattern matching: require non-empty Name
+            if (req is not { Name: { Length: > 0 } name })
+                return BadRequest("Category Name is required.");
+
             var created = _categoryService.Create(req);
             return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
         }

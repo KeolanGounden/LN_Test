@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace ProductManagementAPI.Extensions
 {
@@ -59,7 +60,9 @@ namespace ProductManagementAPI.Extensions
             set => _pageSize = value > 0 ? value : 10;
         }
 
+        [JsonPropertyName("sort_by")]
         public string? SortBy { get; set; }
+        [JsonPropertyName("descending")]
         public bool Descending { get; set; } = false;
     }
 

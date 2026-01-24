@@ -51,6 +51,12 @@ namespace ProductManagementAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TakealotContentResponse request)
         {
+            if (request is null)
+                return BadRequest("Request body is required.");
+
+            if (request is not { Name: { Length: > 0 } })
+                return BadRequest("Product Name is required.");
+
             var entity = new ChangeTrackerModel.Models.Entities.PlatformContentTakealotEntity
             {
                 Id = request.Id == Guid.Empty ? Guid.NewGuid() : request.Id,
@@ -69,6 +75,12 @@ namespace ProductManagementAPI.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] TakealotContentResponse request)
         {
+            if (request is null)
+                return BadRequest("Request body is required.");
+
+            if (request is not { Name: { Length: > 0 } })
+                return BadRequest("Product Name is required.");
+
             var entity = await _context.PlatformContentTakealot.FindAsync(id);
             if (entity == null) return NotFound();
             entity.Name = request.Name;

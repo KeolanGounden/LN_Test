@@ -20,5 +20,7 @@ namespace ProductManagementAPI.Models
         [JsonPropertyName("in_stock")]
         public bool? InStock { get; set; }
 
+        
+
     }
 }
