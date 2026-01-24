@@ -1,6 +1,6 @@
-﻿using ChangeTrackerAPI.Extensions;
-using ChangeTrackerAPI.Interfaces;
-using ChangeTrackerAPI.Models;
+﻿using ProductManagementAPI.Extensions;
+using ProductManagementAPI.Interfaces;
+using ProductManagementAPI.Models;
 using ChangeTrackerModel.DatabaseContext;
 using ChangeTrackerModel.Models.Config;
 using ChangeTrackerModel.Models.Data;
@@ -8,9 +8,10 @@ using ChangeTrackerModel.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using ProductManagementAPI.Services;
 
 
-namespace ChangeTrackerAPI.Services
+namespace ProductManagementAPI.Services
 {
     public class PlatformContentService : IPlatformContentService
     {
@@ -18,15 +19,25 @@ namespace ChangeTrackerAPI.Services
         private readonly MySqlContext _context;
         private ILogger<PlatformContentService> _logger;
         private PlatformConfig _platformConfig;
+        private readonly IProductSearchEngine<PlatformContentTakealotEntity> _searchEngine;
 
-        public PlatformContentService(MySqlContext context, ILogger<PlatformContentService> logger, IHttpClientFactory httpClientFactory, IOptions<PlatformConfig> platformConfig)
+        public PlatformContentService(MySqlContext context, ILogger<PlatformContentService> logger, IHttpClientFactory httpClientFactory, IOptions<PlatformConfig> platformConfig, IProductSearchEngine<PlatformContentTakealotEntity> searchEngine)
         {
             _context = context;
             _logger = logger;
             _httpClient = httpClientFactory.CreateClient();
             _platformConfig = platformConfig.Value;
+            _searchEngine = searchEngine;
+            // configure searchable fields once to avoid reconfiguring (which rebuilds index) on each request
+            var fields = new (Func<PlatformContentTakealotEntity, string> selector, double weight, string name)[]
+            {
+                (p => p.Name ?? string.Empty, 1.0, "name"),
+                (p => p.ProductIdentifier ?? string.Empty, 0.6, "id")
+            };
+            _searchEngine.ConfigureFields(fields);
 
         }
+
 
         public async Task PopulateTakealot(long start = 1,long target = 99999999)
         {
@@ -196,16 +207,12 @@ namespace ChangeTrackerAPI.Services
 
         public async Task<PagedResult<TakealotContentResponse>> SearchTakealot(TakealotSearchRequest request, CancellationToken cancellationToken)
         {
+            // Build base query with filters other than name
             var query = _context.PlatformContentTakealot.AsNoTracking();
-
-            if(request.Name != null && request.Name != string.Empty)
-            {
-                query = query.Where(x => x.Name.Contains(request.Name));
-            }
 
             if (request.LastUpdatedStart != null && request.LastUpdatedEnd != null)
             {
-                query = query.Where(x =>   x.LastUpdated.Date <= request.LastUpdatedEnd && x.LastUpdated.Date >= request.LastUpdatedStart);
+                query = query.Where(x => x.LastUpdated.Date <= request.LastUpdatedEnd && x.LastUpdated.Date >= request.LastUpdatedStart);
             }
 
             if (request.ProductId != null)
@@ -218,17 +225,63 @@ namespace ChangeTrackerAPI.Services
                 query = query.Where(x => x.InStock == request.InStock);
             }
 
-            var result = query.OrderBy(x => x.ProductIdentifier).Select(e => new TakealotContentResponse()
+            // If no name provided, fall back to database paging
+            if (string.IsNullOrWhiteSpace(request.Name))
             {
-                Id = e.Id,
-                Name = e.Name,
-                LastUpdated = e.LastUpdated,
-                Url = e.Url,
-                ProductIdentifier = e.ProductIdentifier,
-                InStock = e.InStock
-            });
+                var result = query.OrderBy(x => x.ProductIdentifier).Select(e => new TakealotContentResponse()
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    LastUpdated = e.LastUpdated,
+                    Url = e.Url,
+                    ProductIdentifier = e.ProductIdentifier,
+                    InStock = e.InStock
+                });
 
-            return await result.ToPagedResultAsync(request,cancellationToken);
+                return await result.ToPagedResultAsync(request, cancellationToken);
+            }
+
+            var candidates = await query.OrderBy(x => x.ProductIdentifier)
+                .Select(e => new PlatformContentTakealotEntity
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    LastUpdated = e.LastUpdated,
+                    Url = e.Url,
+                    ProductIdentifier = e.ProductIdentifier,
+                    InStock = e.InStock
+                })
+                .ToListAsync(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // use injected search engine instance: perform non-mutating search against candidates to avoid rebuilding engine state
+            var searchResults = _searchEngine.Search(candidates, request.Name ?? string.Empty, maxResults: candidates.Count()).ToList();
+
+            var total = searchResults.Count;
+
+            // Apply paging to results
+            var paged = searchResults
+                .Skip(request.PageNumber * request.PageSize)
+                .Take(request.PageSize)
+                .Select(r => new TakealotContentResponse
+                {
+                    Id = r.Item.Id,
+                    Name = r.Item.Name,
+                    LastUpdated = r.Item.LastUpdated,
+                    Url = r.Item.Url,
+                    ProductIdentifier = r.Item.ProductIdentifier,
+                    InStock = r.Item.InStock
+                })
+                .ToList();
+
+            return new PagedResult<TakealotContentResponse>
+            {
+                Items = paged,
+                TotalCount = total,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
         }
     }
 }

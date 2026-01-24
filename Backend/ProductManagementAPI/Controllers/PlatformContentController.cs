@@ -1,12 +1,12 @@
-﻿using ChangeTrackerAPI.Exceptions;
-using ChangeTrackerAPI.Extensions;
-using ChangeTrackerAPI.Interfaces;
-using ChangeTrackerAPI.Models;
+﻿using ProductManagementAPI.Exceptions;
+using ProductManagementAPI.Extensions;
+using ProductManagementAPI.Interfaces;
+using ProductManagementAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace ChangeTrackerAPI.Controllers
+namespace ProductManagementAPI.Controllers
 {
     [Route("api/platform-content")]
     public class PlatformContentController : Controller

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ChangeTrackerAPI.Extensions
+namespace ProductManagementAPI.Extensions
 {
     public static class IQueryableExtensions
     {

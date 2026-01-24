@@ -1,4 +1,4 @@
-﻿namespace ChangeTrackerAPI.Models
+﻿namespace ProductManagementAPI.Models
 {
     public class TimeseriesData
     {

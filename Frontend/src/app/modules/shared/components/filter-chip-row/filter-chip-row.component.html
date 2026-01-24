@@ -7,7 +7,9 @@
 
 
     <div #scrollContainer class="flex overflow-x-auto overflow-y-hidden whitespace-nowrap space-x-2 pr-4 scroll-smooth">
-        @for(field of config; track field) {
+        <mat-chip-set>
+
+             @for(field of config; track field) {
         @if (field.value !== null && field.value !== '') {
         @if(!field.selectConfig){
         <app-filter-chip [config]="{ key: field.key, label: field.label[0] }"
@@ -30,6 +32,9 @@
 
         }
         }
+
+        </mat-chip-set>
+       
 
     </div>
 

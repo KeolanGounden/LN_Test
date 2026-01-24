@@ -1,9 +1,9 @@
-﻿using ChangeTrackerAPI.Extensions;
-using ChangeTrackerAPI.Models;
+﻿using ProductManagementAPI.Extensions;
+using ProductManagementAPI.Models;
 using ChangeTrackerModel.Models.Data;
 using ChangeTrackerModel.Models.Entities;
 
-namespace ChangeTrackerAPI.Interfaces
+namespace ProductManagementAPI.Interfaces
 {
     public interface IPlatformContentService
     {

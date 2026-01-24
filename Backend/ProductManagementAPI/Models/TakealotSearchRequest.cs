@@ -1,7 +1,7 @@
-﻿using ChangeTrackerAPI.Extensions;
+﻿using ProductManagementAPI.Extensions;
 using System.Text.Json.Serialization;
 
-namespace ChangeTrackerAPI.Models
+namespace ProductManagementAPI.Models
 {
     public record TakealotSearchRequest : PaginationParams
     {

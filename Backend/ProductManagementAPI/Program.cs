@@ -1,6 +1,6 @@
-using ChangeTrackerAPI.Interfaces;
-using ChangeTrackerAPI.Services;
-using ChangeTrackerAPI.Utils;
+using ProductManagementAPI.Interfaces;
+using ProductManagementAPI.Services;
+using ProductManagementAPI.Utils;
 using ChangeTrackerModel.DatabaseContext;
 using ChangeTrackerModel.Models.Config;
 using Microsoft.EntityFrameworkCore;
@@ -21,12 +21,16 @@ services.AddSwaggerGen(options =>
     options.UseAllOfForInheritance();
 });
 
-services.AddDbContext<MySqlContext>(options => options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")), x => x.MigrationsAssembly("ChangeTrackerAPI").UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)), ServiceLifetime.Scoped);
+services.AddDbContext<MySqlContext>(options => options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")), x => x.MigrationsAssembly("ProductManagementAPI").UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)), ServiceLifetime.Scoped);
 
 services.AddControllers();
 
 
 services.AddScoped<IPlatformContentService, PlatformContentService>();
+// register product search engine as open-generic for DI
+services.AddTransient(typeof(IProductSearchEngine<>), typeof(ProductSearchEngine<>));
+// categories
+services.AddSingleton<ProductManagementAPI.Interfaces.ICategoryService, ProductManagementAPI.Services.CategoryService>();
 
 
 services.AddHttpClient();

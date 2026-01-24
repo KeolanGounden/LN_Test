@@ -1,4 +1,4 @@
-﻿namespace ChangeTrackerAPI.Exceptions
+﻿namespace ProductManagementAPI.Exceptions
 {
     public class MetricNotFoundException : Exception
     {

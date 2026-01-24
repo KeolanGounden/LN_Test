@@ -34,6 +34,6 @@ The signal r frontend client is generated using this [package](https://github.co
 
 In the project console, change directory to the project with the signal r hub defination and run the following command. 
 
-> dotnet tsrts --project ChangeTrackerAPI.csproj --output SignalRGenerated
+> dotnet tsrts --project ProductManagementAPI.csproj --output SignalRGenerated
 
 Copy the contents of the generated file to the frontend
