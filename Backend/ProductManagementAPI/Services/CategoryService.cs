@@ -16,27 +16,28 @@ namespace ProductManagementAPI.Services
             _repo = repo;
         }
 
-        public CategoryDto Create(CreateCategoryRequest req)
+        public async Task<CategoryDto> CreateAsync(CreateCategoryRequest req)
         {
             var id = Guid.NewGuid();
             var dto = new CategoryDto(id, req.Name, req.Description, req.ParentCategoryId);
-            _repo.AddAsync(dto).GetAwaiter().GetResult();
+            await _repo.AddAsync(dto);
             return dto;
         }
 
-        public IEnumerable<CategoryDto> GetAll()
+        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
         {
-            return _repo.GetAllAsync().GetAwaiter().GetResult().OrderBy(c => c.Name);
+            var all = await _repo.GetAllAsync();
+            return all.OrderBy(c => c.Name);
         }
 
-        public CategoryDto? Get(Guid id)
+        public async Task<CategoryDto?> GetAsync(Guid id)
         {
-            return _repo.GetByIdAsync(id).GetAwaiter().GetResult();
+            return await _repo.GetByIdAsync(id);
         }
 
-        public IEnumerable<CategoryTreeDto> GetTree()
+        public async Task<IEnumerable<CategoryTreeDto>> GetTreeAsync()
         {
-            var all = _repo.GetAllAsync().GetAwaiter().GetResult();
+            var all = await _repo.GetAllAsync();
             var dict = all.ToDictionary(c => c.Id, c => new CategoryTreeDto(c.Id, c.Name, c.Description, c.ParentCategoryId, new List<CategoryTreeDto>()));
 
             foreach (var node in dict.Values)

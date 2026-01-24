@@ -6,9 +6,9 @@ namespace ProductManagementAPI.Interfaces
 {
     public interface ICategoryService
     {
-        IEnumerable<CategoryDto> GetAll();
-        IEnumerable<CategoryTreeDto> GetTree();
-        CategoryDto? Get(Guid id);
-        CategoryDto Create(CreateCategoryRequest req);
+        Task<IEnumerable<CategoryDto>> GetAllAsync();
+        Task<IEnumerable<CategoryTreeDto>> GetTreeAsync();
+        Task<CategoryDto?> GetAsync(Guid id);
+        Task<CategoryDto> CreateAsync(CreateCategoryRequest req);
     }
 }

@@ -16,19 +16,21 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_categoryService.GetAll());
+            var all = await _categoryService.GetAllAsync();
+            return Ok(all);
         }
 
         [HttpGet("tree")]
-        public IActionResult GetTree()
+        public async Task<IActionResult> GetTree()
         {
-            return Ok(_categoryService.GetTree());
+            var tree = await _categoryService.GetTreeAsync();
+            return Ok(tree);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateCategoryRequest req)
+        public async Task<IActionResult> Create([FromBody] CreateCategoryRequest req)
         {
             if (req is null)
                 return BadRequest("Request body is required.");
@@ -37,7 +39,7 @@ namespace ProductManagementAPI.Controllers
             if (req is not { Name: { Length: > 0 } name })
                 return BadRequest("Category Name is required.");
 
-            var created = _categoryService.Create(req);
+            var created = await _categoryService.CreateAsync(req);
             return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
         }
     }
