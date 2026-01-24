@@ -1,14 +1,10 @@
 <app-sliding-form [views]="views">
     <ng-template [templateId]="mainId">
-        <mat-tab-group [selectedIndex]="tabIndex">
-
-
-            <mat-tab label="Details">
 
                 <mat-card class="mat-elevation-z0 !p-0">
                     <mat-card-content>
 
-                        <app-content-header [headerConfig]="details" [selectionDisplay]="'500000000'" >
+                        <app-content-header [headerConfig]="details">
                         </app-content-header>
 
                         <mat-form-field>
@@ -16,202 +12,97 @@
                             <input matInput />
                         </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>Value</mat-label>
-                            <input matInput [disabled]="true" value="22.2" />
+                        <mat-form-field >
+                        <mat-label>Description</mat-label>
+                        <textarea matInput
+                                    cdkTextareaAutosize
+                                    #autosize="cdkTextareaAutosize"
+                                    cdkAutosizeMinRows="1"
+                                    cdkAutosizeMaxRows="5"></textarea>
                         </mat-form-field>
 
                         <mat-form-field>
-                            <mat-label>Template</mat-label>
-                            <mtx-select [appendTo]="'body'" [clearable]="false">
-                                <mtx-option [value]="'default'">
-                                    Default
-                                </mtx-option>
-                            </mtx-select>
+                            <mat-label>SKU</mat-label>
+                            <input matInput />
                         </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Price</mat-label>
+                            <input matInput value="22.2" />
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Quantity</mat-label>
+                            <input matInput value="22.2" />
+                        </mat-form-field>
+
+                       
 
                     </mat-card-content>
                 </mat-card>
 
 
-            </mat-tab>
+                <mat-card class="mat-elevation-z0 !p-0 mt-2">
+                    <mat-card-content>
 
-
-            <mat-tab label="Rules">
-                <div class="flex flex-col gap-1 pt-1">
-                    <mat-card class="mat-elevation-z0">
-                        <mat-card-content>
-
-                             <app-content-header [headerConfig]="rulesHeader" [actionButtons]="ruleButtons">
+                        <app-content-header [headerConfig]="category">
                         </app-content-header>
 
-                        <mtx-grid #rulesTable [data]="ruleData" [columns]="ruleColumns" [showPaginator]="false"
-                            [cellTemplate]="{ 'options': menuTemplate }">
-                        </mtx-grid>
 
-                        <ng-template #menuTemplate let-row>
-                            <button [matMenuTriggerFor]="rowMenu" class="cursor-pointer">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #rowMenu="matMenu">
-                                <button mat-menu-item (click)="viewRule(row)">View</button>
-                                <button mat-menu-item (click)="editRule(row)">Edit</button>
-                                <button mat-menu-item (click)="deleteRule(row)">Delete</button>
-                            </mat-menu>
-                        </ng-template>
+                        <ul ngTree #tree="ngTree" [(values)]="selected" class="basic-tree">
+                        <ng-template
+                            [ngTemplateOutlet]="treeNodes"
+                            [ngTemplateOutletContext]="{nodes: nodes, parent: tree}"
+                        />
+                        </ul>
 
 
-                        </mat-card-content>
-                       
-                    </mat-card>
-                </div>
-
-            </mat-tab>
+                    </mat-card-content>
+                </mat-card>
 
 
-        </mat-tab-group>
 
     </ng-template>
 
-    <ng-template [templateId]="rulesId">
-        <form [formGroup]="form" class="flex flex-col gap-2">
 
-            <mat-card class="mat-elevation-z0">
-                <mat-card-content>
-
-                     <app-content-header [headerConfig]="editRulesHeader"></app-content-header>
-
-                <mat-form-field>
-                    <mat-label>Rule</mat-label>
-                    <mtx-select [appendTo]="'body'" [clearable]="false" formControlName="rule">
-                        <mtx-option [value]="'rule'">
-                            Setpoint
-                        </mtx-option>
-                    </mtx-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Name</mat-label>
-                    <input matInput formControlName="name" />
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Delay</mat-label>
-                    <input matInput formControlName="delay" />
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Alert Group</mat-label>
-                    <mtx-select [appendTo]="'body'" [clearable]="false" formControlName="alertGroup">
-                        <mtx-option [value]="'group-a'">
-                            Group A
-                        </mtx-option>
-                    </mtx-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Template</mat-label>
-                    <mtx-select [appendTo]="'body'" [clearable]="false" formControlName="template">
-                        <mtx-option [value]="'default'">
-                            Default
-                        </mtx-option>
-                    </mtx-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Alert Type</mat-label>
-                    <mtx-select [appendTo]="'body'" [clearable]="false" formControlName="alertType">
-                        <mtx-option [value]="'default'">
-                            Server Alert
-                        </mtx-option>
-                    </mtx-select>
-                </mat-form-field>
-
-                <mat-checkbox [checked]="true" formControlName="backInRange">Back in
-                    Range</mat-checkbox>
-                    
-                </mat-card-content>
-
-            </mat-card>
+    <ng-template #treeNodes let-nodes="nodes" let-parent="parent">
+  @for (node of nodes; track node.value) {
+    <li
+      ngTreeItem
+      [parent]="parent"
+      [value]="node.value"
+      [label]="node.name"
+      [disabled]="node.disabled"
+      [(expanded)]="node.expanded"
+      #treeItem="ngTreeItem"
+    >
+      <span aria-hidden="true" class="material-symbols-outlined expand-icon" translate="no">{{
+        node.children ? 'chevron_right' : ''
+      }}</span>
+      <span aria-hidden="true" class="material-symbols-outlined" translate="no">{{
+        node.children ? 'folder' : 'docs'
+      }}</span>
+      {{ node.name }}
+      <span
+        aria-hidden="true"
+        class="material-symbols-outlined selected-icon"
+        translate="no"
+        aria-hidden="true"
+        >check</span
+      >
+    </li>
+    @if (node.children) {
+      <ul role="group">
+        <ng-template ngTreeItemGroup [ownedBy]="treeItem" #group="ngTreeItemGroup">
+          <ng-template
+            [ngTemplateOutlet]="treeNodes"
+            [ngTemplateOutletContext]="{nodes: node.children, parent: group}"
+          />
+        </ng-template>
+      </ul>
+    }
+  }
+</ng-template>
 
 
-
-
-<mat-card class="mat-elevation-z0">
-    <mat-card-content>
-        <app-content-header [headerConfig]="editConfigHeader"></app-content-header>
-
-                <mat-form-field>
-                    <mat-label>Maximum</mat-label>
-                    <input matInput formControlName="max" />
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Minimum</mat-label>
-                    <input matInput formControlName="min" />
-                </mat-form-field>
-        
-    </mat-card-content>
-</mat-card>
-
-	<mat-card class="mat-elevation-z0">
-    <mat-card-content>
-         <app-content-header [headerConfig]="enableSchedulesHeader" [actionButtons]="editSchedulesButtons"
-                    [titleButton]="enableSchedulesButton"></app-content-header>
-                @if(form.controls['enableAlertSchedules'].value){
-                <mtx-grid #schedulesTable [data]="schedulesDatasource" [columns]="schedulesColumns"
-                    [showPaginator]="false">
-                </mtx-grid>
-                }
-        
-    </mat-card-content>
-</mat-card>
-
-
-
-
-        </form>
-
-    </ng-template>
-    <ng-template [templateId]="schedulesId">
-      
-
-        <form [formGroup]="addScheduleForm" class="flex flex-col">
-
-            	<mat-card class="mat-elevation-z0">
-    <mat-card-content>
-          <app-content-header [headerConfig]="addSchedule"></app-content-header>
-                       <div class="pr-2">
-                    <mat-form-field>
-                        <mat-label>Day</mat-label>
-                        <mtx-select [appendTo]="'body'" [clearable]="false" formControlName="day">
-                            <mtx-option [value]="'Monday'">Monday</mtx-option>
-                            <mtx-option [value]="'Tuesday'">Tuesday</mtx-option>
-                            <mtx-option [value]="'Wednesday'">Wednesday</mtx-option>
-                        </mtx-select>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Start Time</mat-label>
-                        <mtx-datetimepicker #startTimePicker [type]="'time'" [mode]="'auto'">
-                        </mtx-datetimepicker>
-                        <input [mtxDatetimepicker]="startTimePicker" formControlName="startTime" matInput />
-                        <mtx-datetimepicker-toggle [for]="startTimePicker" matSuffix></mtx-datetimepicker-toggle>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>End Time</mat-label>
-                        <mtx-datetimepicker #endTimePicker [type]="'time'" [mode]="'auto'">
-                        </mtx-datetimepicker>
-                        <input [mtxDatetimepicker]="endTimePicker" formControlName="endTime" matInput />
-                        <mtx-datetimepicker-toggle [for]="endTimePicker" matSuffix></mtx-datetimepicker-toggle>
-                    </mat-form-field>
-
-                    <mat-checkbox formControlName="snooze">Snooze</mat-checkbox>
-                </div>
-    </mat-card-content>
-</mat-card>
-        </form>
-
-    </ng-template>
 </app-sliding-form>

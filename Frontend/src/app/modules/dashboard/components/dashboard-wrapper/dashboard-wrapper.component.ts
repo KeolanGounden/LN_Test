@@ -82,13 +82,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
       label: "Table Settings",
       tooltip: "Table Settings"
     },
-    {
-      icon: "update",
-      action: () => { this.getFilteredData(this.searchQuery, this.queryParams.pageNumber) },
-      type: ButtonType.Icon,
-      label: "Auto Refresh Settings",
-      tooltip: "Auto Refresh Settings"
-    },
+
     {
       icon: "refresh",
       type: ButtonType.Icon,
@@ -99,31 +93,13 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
   ]
 
   actionButtons: ButtonConfig[] = [
-    {
-      icon: "arrow_circle_down",
-      type: ButtonType.Flat,
-      action: () => {
 
-        const drawerRef = this.drawer.open(TableReorderDrawerComponent, {
-          width: '320px',
-          position: 'right',
-          data: this.table,
-          hasBackdrop: true
-        })
-
-        drawerRef.afterDismissed().subscribe(result => {
-          this.getFilteredData(this.searchQuery, this.queryParams.pageNumber);
-        });
-      },
-      tooltip: "Downlink",
-      label: "Downlink"
-    },
     {
       icon: "add_task",
-      action: () => { this._router.navigate(['/find-item']) },
+      action: () =>  this.openViewDialog() ,
       type: ButtonType.Flat,
-      tooltip: "Add Task",
-      label: "Add Task"
+      tooltip: "Add Product",
+      label: "Add Product"
     }
   ]
 
@@ -302,7 +278,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
     this.dashboardService.search(request)
   }
 
-  openViewDialog(rowData: TakealotContentResponse)
+  openViewDialog(rowData?: TakealotContentResponse)
   {
 
      this.dialog.open(ViewItemMetadataDialogComponent, {
