@@ -44,21 +44,10 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
 
   headerConfig: HeaderConfig[] = [
     {
-      id: "content", title: "Takealot Content",
-      headerButton: {
-        type: ButtonType.Badge,
-        label: "Global",
-        action: () => { }
-      },
-      selected: true
-    },
-    {
-      title: "Home", subtitle: "", id: "home", headerFunctionCallback: () => {
-        this._ngZone.run(() => {
-          this._router.navigateByUrl('')
-        })
-      }
+      id: "content", title: "Products",
+
     }
+    
   ]
 
   pageButtons: ButtonConfig[] = [
