@@ -1,0 +1,57 @@
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav #sidenav [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)" class="!flex bg-slate-900 text-gray-300 w-64">
+    <mat-nav-list class="!flex flex-col h-full p-4">
+
+      <!-- Top navigation items in a growing wrapper -->
+      <div class="flex flex-col gap-2 flex-grow">
+        <mat-list-item
+          routerLink="/app/dashboard"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="active"
+        >
+          <div class="flex flex-row items-center w-full">
+            <mat-icon class="text-lg">dashboard</mat-icon>
+            <span class="text-base w-full pl-4">Dashboard</span>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item
+          routerLink="/app/categories"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <div class="flex flex-row items-center w-full">
+            <mat-icon class="text-lg">category</mat-icon>
+            <span class="text-base w-full pl-4">Categories</span>
+          </div>
+        </mat-list-item>
+      </div>
+
+      <!-- Logout pinned to bottom -->
+      <mat-list-item
+        routerLink="/login"
+        class="w-full px-4 py-3 rounded-md hover:bg-red-600 transition-colors mt-auto"
+      >
+        <div class="flex flex-row items-center w-full">
+          <mat-icon class="text-lg">logout</mat-icon>
+          <span class="text-base w-full pl-4">Logout</span>
+        </div>
+      </mat-list-item>
+
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="flex flex-col h-full">
+
+    <mat-toolbar class="flex-none sticky top-0 z-10 !bg-transparent !px-4">
+      <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="flex-1 overflow-auto">
+      <router-outlet></router-outlet>
+    </main>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -64,6 +64,11 @@ body {
 
 }
 
+app-root {
+  height: 100%;
+  display: block;
+}
+
 
 .mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field .mdc-notched-outline__notch {
   border-right-style: hidden;
@@ -122,5 +127,3 @@ body {
     @include mat.elevation($i);
   }
 }
-
-

@@ -268,7 +268,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
   setUpResizeObserver(): void {
     this.observer = new ResizeObserver(_ => {
       const height = this.headerRef?.nativeElement?.offsetHeight ?? 0;
-      this.gridHeight = `calc(100vh - ${height}px)`;
+      this.gridHeight = `calc(100vh - ${height+64}px)`;
     });
 
     this.observer.observe(this.headerRef.nativeElement);
