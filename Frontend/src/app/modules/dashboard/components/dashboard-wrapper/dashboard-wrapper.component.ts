@@ -278,12 +278,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
 
   }
 
-  openGraphDialog(rowData: TakealotContentResponse)
-  {
 
-   
-
-  }
 
 
 }
