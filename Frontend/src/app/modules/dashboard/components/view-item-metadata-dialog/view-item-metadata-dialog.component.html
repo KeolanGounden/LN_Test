@@ -51,8 +51,8 @@
 
                         <ul ngTree #tree="ngTree" [(values)]="selected" class="basic-tree">
                         <ng-template
-                            [ngTemplateOutlet]="treeNodes"
-                            [ngTemplateOutletContext]="{nodes: nodes, parent: tree}"
+                          [ngTemplateOutlet]="treeNodes"
+                          [ngTemplateOutletContext]="{nodes: (nodes$ | async) || [], parent: tree}"
                         />
                         </ul>
 
