@@ -1,5 +1,4 @@
-﻿using ProductManagementAPI.Exceptions;
-using ProductManagementAPI.Extensions;
+﻿using ProductManagementAPI.Extensions;
 using ProductManagementAPI.Interfaces;
 using ProductManagementAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,20 +19,7 @@ namespace ProductManagementAPI.Controllers
         }
 
 
-        [HttpPost("populate-takealot")]
-        public async Task<ActionResult> PopulateTakealot([FromBody] TakealotPopulateRequest target)
-        {
-            if (target.StartIndex > 0 && target.EndIndex <= 99999999)
-            {
-                await _platformContentService.PopulateTakealot(target.StartIndex, target.EndIndex);
-            }
-            else
-            {
-                await _platformContentService.PopulateTakealot(1, 99999999);
-            }
 
-            return Ok();
-        }
 
     
 

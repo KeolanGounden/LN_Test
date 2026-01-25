@@ -30,9 +30,16 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
+    </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ProductManagementModel\ProductManagementModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 
 </Project>

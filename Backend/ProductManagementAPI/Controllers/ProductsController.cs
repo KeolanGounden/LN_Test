@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductManagementAPI.Extensions;
 using ProductManagementAPI.Models;
-using ChangeTrackerModel.Models.Entities;
-using ChangeTrackerModel.DatabaseContext;
-using Microsoft.EntityFrameworkCore;
+using ProductManagementAPI.Entities;
 using ProductManagementAPI.Interfaces;
 
 namespace ProductManagementAPI.Controllers
@@ -11,41 +9,29 @@ namespace ProductManagementAPI.Controllers
     [Route("api/products")]
     public class ProductsController : Controller
     {
-        private readonly MySqlContext _context;
+        private readonly ProductManagementAPI.Services.ProductService _productService;
+        private readonly IRepository<ProductEntity> _repo;
 
-        public ProductsController(MySqlContext context)
+        public ProductsController(ProductManagementAPI.Services.ProductService productService, IRepository<ProductEntity> repo)
         {
-            _context = context;
+            _productService = productService;
+            _repo = repo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string? name, [FromQuery] Guid? categoryId, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> Get([FromQuery] string? name, [FromQuery] Guid? categoryId, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10, [FromQuery] string? sortBy = null, [FromQuery] bool descending = false)
         {
-            var query = _context.PlatformContentTakealot.AsNoTracking().AsQueryable();
-            if (!string.IsNullOrWhiteSpace(name))
-                query = query.Where(p => EF.Functions.Like(p.Name, $"%{name}%"));
-
-            // category filtering is not implemented on PlatformContentTakealotEntity; placeholder to show filter param
-            var total = await query.CountAsync();
-            var items = await query.OrderBy(p => p.ProductIdentifier).Skip(pageNumber * pageSize).Take(pageSize).Select(e => new TakealotContentResponse
-            {
-                Id = e.Id,
-                Name = e.Name,
-                LastUpdated = e.LastUpdated,
-                Url = e.Url,
-                ProductIdentifier = e.ProductIdentifier,
-                InStock = e.InStock
-            }).ToListAsync();
-
-            return Ok(new PagedResult<TakealotContentResponse> { Items = items, TotalCount = total, PageNumber = pageNumber, PageSize = pageSize });
+            var req = new TakealotSearchRequest { Name = name, ProductId = null, PageNumber = pageNumber, PageSize = pageSize, SortBy = sortBy, Descending = descending };
+            var res = await _productService.SearchProducts(req);
+            return Ok(res);
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var item = await _context.PlatformContentTakealot.FindAsync(id);
-            if (item == null) return NotFound();
-            return Ok(new TakealotContentResponse { Id = item.Id, Name = item.Name, LastUpdated = item.LastUpdated, Url = item.Url, ProductIdentifier = item.ProductIdentifier, InStock = item.InStock });
+            var resp = await _productService.GetByIdAsync(id);
+            if (resp == null) return NotFound();
+            return Ok(resp);
         }
 
         [HttpPost]
@@ -57,18 +43,19 @@ namespace ProductManagementAPI.Controllers
             if (request is not { Name: { Length: > 0 } })
                 return BadRequest("Product Name is required.");
 
-            var entity = new ChangeTrackerModel.Models.Entities.PlatformContentTakealotEntity
+            var entity = new ProductEntity
             {
                 Id = request.Id == Guid.Empty ? Guid.NewGuid() : request.Id,
                 Name = request.Name,
-                LastUpdated = request.LastUpdated,
-                Url = request.Url,
-                ProductIdentifier = request.ProductIdentifier,
-                InStock = request.InStock,
-                MetaRaw = "{}"
+                Description = string.Empty,
+                SKU = request.ProductIdentifier,
+                Price = 0,
+                Quantity = request.InStock ? 1 : 0,
+                CategoryId = null,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
-            await _context.PlatformContentTakealot.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await _repo.AddAsync(entity);
             return CreatedAtAction(nameof(GetById), new { id = entity.Id }, request);
         }
 
@@ -81,24 +68,22 @@ namespace ProductManagementAPI.Controllers
             if (request is not { Name: { Length: > 0 } })
                 return BadRequest("Product Name is required.");
 
-            var entity = await _context.PlatformContentTakealot.FindAsync(id);
+            var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return NotFound();
             entity.Name = request.Name;
-            entity.LastUpdated = request.LastUpdated;
-            entity.Url = request.Url;
-            entity.ProductIdentifier = request.ProductIdentifier;
-            entity.InStock = request.InStock;
-            await _context.SaveChangesAsync();
+            entity.SKU = request.ProductIdentifier;
+            entity.Quantity = request.InStock ? 1 : 0;
+            entity.UpdatedAt = DateTime.UtcNow;
+            await _repo.UpdateAsync(entity);
             return NoContent();
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var entity = await _context.PlatformContentTakealot.FindAsync(id);
+            var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return NotFound();
-            _context.PlatformContentTakealot.Remove(entity);
-            await _context.SaveChangesAsync();
+            await _repo.DeleteAsync(id);
             return NoContent();
         }
     }

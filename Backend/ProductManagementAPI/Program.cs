@@ -1,4 +1,5 @@
 using ProductManagementAPI.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using ProductManagementAPI.Services;
 using ProductManagementAPI.Utils;
 using ChangeTrackerModel.DatabaseContext;
@@ -25,10 +26,16 @@ services.AddDbContext<MySqlContext>(options => options.UseMySql(configuration.Ge
 
 services.AddControllers();
 
-
 services.AddScoped<IPlatformContentService, PlatformContentService>();
 // register product search engine as open-generic for DI
 services.AddTransient(typeof(IProductSearchEngine<>), typeof(ProductSearchEngine<>));
+
+// In-memory EF context for products
+services.AddDbContext<ProductManagementAPI.Data.InMemoryDbContext>(options => options.UseInMemoryDatabase("ProductsDb"), ServiceLifetime.Scoped);
+services.AddScoped<ProductManagementAPI.Repositories.ProductEntityRepository>();
+services.AddScoped<IRepository<ProductManagementAPI.Entities.ProductEntity>>(sp => sp.GetRequiredService<ProductManagementAPI.Repositories.ProductEntityRepository>());
+services.AddScoped<ProductManagementAPI.Services.ProductService>();
+services.AddScoped<ProductManagementAPI.Services.DatabaseSeeder>();
 // repositories
 services.AddScoped<ProductManagementAPI.Interfaces.IProductRepository, ProductManagementAPI.Repositories.ProductRepository>();
 services.AddSingleton<ProductManagementAPI.Interfaces.ICategoryRepository, ProductManagementAPI.Repositories.CategoryRepository>();
@@ -52,6 +59,13 @@ services.Configure<PlatformConfig>(configuration.GetSection(nameof(PlatformConfi
 services.AddCors();
 
 var app = builder.Build();
+
+// seed in-memory database
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetService<ProductManagementAPI.Services.DatabaseSeeder>();
+    seeder?.SeedAsync().GetAwaiter().GetResult();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
