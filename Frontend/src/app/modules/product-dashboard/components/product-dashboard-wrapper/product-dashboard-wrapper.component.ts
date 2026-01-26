@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDest
 import { MtxGrid, MtxGridCellTemplate, MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { DashboardService } from '../../states/dashboard.state';
 import { Observable } from 'rxjs';
-import { ProductResponse, ProductSearchRequest, TakealotContentResponse, TakealotSearchRequest } from '../../../ct-client';
+import { CategoryDto, ProductResponse, ProductSearchRequest, TakealotContentResponse, TakealotSearchRequest } from '../../../ct-client';
 import { AsyncPipe } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
@@ -121,6 +121,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   name: ProductKeys = 'name';
   description:ProductKeys = 'description';
   sku:ProductKeys = 'sku';
+  categoryId:ProductKeys = 'categoryHierarchy';
   price:ProductKeys = 'price';
   quantity:ProductKeys = 'quantity';
   lastUpdated:ProductKeys = 'updatedAt';
@@ -136,6 +137,9 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
       },
     },
     { header: 'SKU', field: this.sku },
+     { header: 'Category', field: this.categoryId, formatter(rowData, colDef) {
+        return rowData.categoryHierarchy?.map((x:CategoryDto)=>x.name).join(" > ") ?? '';
+      }, },
     { header: 'Stock Status', field: this.status, },
      { header: 'Quantity', field: this.quantity, },
       { header: 'Price', field: this.price, },

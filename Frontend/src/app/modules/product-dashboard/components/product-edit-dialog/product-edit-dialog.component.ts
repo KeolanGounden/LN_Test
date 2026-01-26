@@ -133,6 +133,14 @@ category: HeaderConfig = {
     this.productState.productDetail$.subscribe(content=>{
       this.item = content;
       this.views[0].title = `Edit Product - ${content?.name}`;
+
+      let category = content?.categoryId ? content?.categoryId : undefined;
+
+      if(category)
+      {
+        this.selected.set([category]);
+      }
+
       this.form.patchValue({
         name: content?.name,
         desc: content?.description,  
