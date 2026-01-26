@@ -6,11 +6,11 @@ import { ButtonAction, SlidingDialogActionButtonConfig } from '../../../shared/m
 import { TemplateIdDirective } from '../../../shared/directives/template-id-directive.directive';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
-import { TakealotContentResponse } from '../../../ct-client';
+import { ProductResponse, TakealotContentResponse } from '../../../ct-client';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInput, MatLabel } from "@angular/material/input";
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
 import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { HeaderConfig } from '../../../shared/models/header-config.model';
@@ -25,6 +25,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
 import {Tree, TreeItem, TreeItemGroup} from '@angular/aria/tree';
 import { CategoriesState } from '../../../categories/state/categories.state';
+import { ProductState } from '../../states/product.state';
 
 @Component({
   selector: 'app-view-item-metadata-dialog',
@@ -62,12 +63,14 @@ import { CategoriesState } from '../../../categories/state/categories.state';
 export class ProductEditDialogComponent {
 
 
-  item: TakealotContentResponse;
+  item: ProductResponse | undefined;
   @ViewChild(SlidingFormComponent) slidingForm!: SlidingFormComponent;
   @ViewChild('menuTemplate', { static: true }) menuTemplate!: TemplateRef<any>;
 
 
   readonly nodes$ = this.categoriesState.treeNodes$;
+  readonly product$ = this.productState.productDetail$;
+  readonly loading$ = this.productState.isGettingProduct$;
   readonly selected = signal<string[]>([]);
 
   form: FormGroup;
@@ -116,17 +119,37 @@ category: HeaderConfig = {
 
 
 
-  constructor(@Inject(MAT_DIALOG_DATA) private content: TakealotContentResponse, private dialogRef: MatDialogRef<ProductEditDialogComponent>, private fb: FormBuilder, private cdr: ChangeDetectorRef, private categoriesState: CategoriesState) {
-    this.item = content;
+  constructor(@Inject(MAT_DIALOG_DATA) private productId: string,  private fb: FormBuilder, private categoriesState: CategoriesState, private productState: ProductState) {
+ 
     categoriesState.fetchCategoriesTree();
 
-    if(content && content?.id)
+    if(productId)
     {
-       this.views[0].title = `Edit Product - ${content.id}`;
+       this.productState.getById(productId);
+       this.views[0].title = `Edit Product`;
+      
     }
 
+    this.productState.productDetail$.subscribe(content=>{
+      this.item = content;
+      this.views[0].title = `Edit Product - ${content?.name}`;
+      this.form.patchValue({
+        name: content?.name,
+        desc: content?.description,  
+        sku: content?.sku,
+        categoryId: content?.categoryId,
+        price: content?.price,
+        quantity: content?.quantity
+      });
+    });
+
     this.form = this.fb.group({
-      name: ['name'],
+      name:  [null, [Validators.required]],
+      desc: [null, [Validators.required]],
+      sku: [null, [Validators.required]],
+      categoryId: [null, [Validators.required]],
+      price: [null, [Validators.required]],
+      quantity: [null, [Validators.required]]
     });
 
 
@@ -134,6 +157,3 @@ category: HeaderConfig = {
 
 
 }
-
-
-// TreeNode type is provided by CategoriesState

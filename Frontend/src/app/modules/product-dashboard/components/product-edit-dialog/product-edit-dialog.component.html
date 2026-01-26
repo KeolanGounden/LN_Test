@@ -7,36 +7,46 @@
                         <app-content-header [headerConfig]="details">
                         </app-content-header>
 
-                        <mat-form-field>
+                         <form [formGroup]="form">
+
+                            <mat-form-field>
                             <mat-label>Name</mat-label>
-                            <input matInput />
+                            <input  formControlName="name" matInput />
+                            <mat-error>Required</mat-error>
                         </mat-form-field>
 
                         <mat-form-field >
                         <mat-label>Description</mat-label>
-                        <textarea matInput
+                        <textarea  formControlName="desc" matInput
                                     cdkTextareaAutosize
                                     #autosize="cdkTextareaAutosize"
                                     cdkAutosizeMinRows="1"
                                     cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-error>Required</mat-error>
                         </mat-form-field>
 
                         <mat-form-field>
                             <mat-label>SKU</mat-label>
-                            <input matInput />
+                            <input formControlName="sku" matInput />
+                            <mat-error>Required</mat-error>
                         </mat-form-field>
 
                         <mat-form-field>
                             <mat-label>Price</mat-label>
-                            <input matInput value="22.2" />
+                            <input formControlName="price" matInput />
+                            <mat-error>Required</mat-error>
                         </mat-form-field>
 
                         <mat-form-field>
                             <mat-label>Quantity</mat-label>
-                            <input matInput value="22.2" />
+                            <input formControlName="quantity" matInput />
+                            <mat-error>Required</mat-error>
                         </mat-form-field>
 
                        
+
+                         </form>
+                      
 
                     </mat-card-content>
                 </mat-card>

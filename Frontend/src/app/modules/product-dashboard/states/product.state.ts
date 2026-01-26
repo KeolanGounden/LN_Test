@@ -11,6 +11,9 @@ export class ProductState {
   private isDeletingSubject = new BehaviorSubject<boolean>(false);
   private deleteDoneSubject = new Subject<boolean>();
   private lastSearchRequest: ProductSearchRequest | undefined;
+  private productDetailSubject = new BehaviorSubject<ProductResponse | undefined>(undefined);
+  private isGettingProductSubject = new BehaviorSubject<boolean>(false);
+  private getProductTrigger$ = new Subject<string>();
   private searchTrigger$ = new Subject<ProductSearchRequest>();
   private deleteTrigger$ = new Subject<string>();
 
@@ -63,6 +66,20 @@ export class ProductState {
         );
       })
     ).subscribe();
+
+    this.getProductTrigger$.pipe(
+      switchMap((id: string) => {
+        this.isGettingProductSubject.next(true);
+        return this._productService.apiProductsIdGet(id).pipe(
+          tap(res => this.productDetailSubject.next(res)),
+          catchError(_ => {
+            this.productDetailSubject.next(undefined);
+            return of(undefined);
+          }),
+          finalize(() => this.isGettingProductSubject.next(false))
+        );
+      })
+    ).subscribe();
   }
 
   // Observables 
@@ -90,6 +107,14 @@ export class ProductState {
     return this.deleteDoneSubject.asObservable();
   }
 
+  get isGettingProduct$(): Observable<boolean> {
+    return this.isGettingProductSubject.asObservable();
+  }
+
+  get productDetail$(): Observable<ProductResponse | undefined> {
+    return this.productDetailSubject.asObservable();
+  }
+
   // Actions 
   search(payload: ProductSearchRequest) {
     this.lastSearchRequest = payload;
@@ -100,10 +125,16 @@ export class ProductState {
     this.deleteTrigger$.next(id);
   }
 
+  getById(id: string): void {
+    this.getProductTrigger$.next(id);
+  }
+
   clear() {
     this.productSubject.next(undefined);
     this.isLoadingSubject.next(false);
     this.isDeletingSubject.next(false);
+    this.productDetailSubject.next(undefined);
+    this.isGettingProductSubject.next(false);
   }
 }
 

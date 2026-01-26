@@ -278,7 +278,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
      this.dialog.open(ProductEditDialogComponent, {
               disableClose:true,
-              data: rowData,
+              data: rowData?.id,
               width: "50vw"
             })
   }
