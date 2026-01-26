@@ -10,7 +10,7 @@
     <span class="mat-card-elevation flex-1 !pr-3 pl-4">
 
         <mtx-grid #table [style.height]="gridHeight" [data]="list" [columns]="columns" [pageOnFront]="false" [cellSelectable]="false"
-            [length]="(takealotContentCount$ | async) ?? 0" [pageIndex]="queryParams.pageNumber ?? 0"
+            [length]="(productContentCount$ | async) ?? 0" [pageIndex]="queryParams.pageNumber ?? 0"
             [pageSize]="queryParams.pageSize ?? 0" [loading]="loading$ | async" [pageSizeOptions]="[25, 50, 100]"
             (page)="getNextPage($event)" [cellTemplate]="gridTemplate">
         </mtx-grid>
@@ -44,8 +44,13 @@
                         <mat-icon>edit</mat-icon>
                         <span>Edit</span>
                     </button>
-                   
+                    <button mat-menu-item (click)="deleteProduct(row.id)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
+                    </button>
                 </mat-menu>
+
+              
             </ng-template>
 
     </span>

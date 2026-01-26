@@ -1,0 +1,54 @@
+<mat-card class="!mat-elevation-z0 !w-full">
+<mat-card-content>
+    <div >
+        <h2 class="text-left !text-xl text-nowrap !font-medium ">{{title}}</h2>
+        <div class="text-base" [innerHTML]="message">{{ message }}</div>
+    </div>
+    <mat-dialog-content>
+
+        @if(requireExplicitConfirmation){
+        <div  class="mt-4">
+            <mat-form-field class="w-full">
+                <mat-label>Please Type "{{ confirmationWord }}"</mat-label>
+                <input matInput [formControl]="confirmationInput" [placeholder]="confirmationPlaceholder??''" />
+                @if(confirmationInput.invalid){
+                <mat-error >
+                    Please Type "{{ confirmationWord }}" to confirm.
+                </mat-error>}
+            </mat-form-field>
+        </div>}
+
+        @if(showNote){
+        <div  class="mt-4">
+            <mat-form-field class="w-full">
+                <mat-label>Notes</mat-label>
+                <textarea matInput 
+                          [formControl]="noteInput" 
+                          [placeholder]="notePlaceholder??''"
+                          rows="3">
+                </textarea>
+                @if(noteInput.invalid){
+                <mat-error >
+                 Required
+                </mat-error>}
+            </mat-form-field>
+        </div>}
+
+    </mat-dialog-content>
+
+  
+    </mat-card-content>
+          <mat-dialog-actions  >
+        <button mat-button (click)="cancel()" color="warn">
+            {{ cancelButtonText}}
+        </button>
+        <button mat-flat-button color="accent" 
+                [disabled]="requireExplicitConfirmation && !isConfirmationValid() || noteInput.invalid"
+                (click)="confirm()">
+            {{ confirmButtonText}}
+        </button>
+    </mat-dialog-actions>
+    </mat-card>
+
+
+

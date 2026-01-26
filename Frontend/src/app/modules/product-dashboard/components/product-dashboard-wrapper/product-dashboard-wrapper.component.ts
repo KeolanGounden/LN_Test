@@ -19,7 +19,10 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import {MatButtonModule} from '@angular/material/button';
 import { ProductEditDialogComponent } from '../product-edit-dialog/product-edit-dialog.component';
-
+import { ProductState } from '../../states/product.state';
+import { ConfirmationDialogContent } from '../../../shared/models/confirmation-dialog';
+import { DialogButtonText } from '../../../shared/models/dialog-button-text.enum';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-dashboard-wrapper',
@@ -99,7 +102,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
     advancedSearchQuery: []
   }
 
-  constructor(private dashboardService: DashboardService, private cdr: ChangeDetectorRef, private drawer: MtxDrawer, private dialog: MatDialog, private _ngZone: NgZone, private _router: Router) {
+  constructor(private dashboardService: ProductState, private cdr: ChangeDetectorRef, private drawer: MtxDrawer, private dialog: MatDialog, private _ngZone: NgZone, private _router: Router) {
     this.dashboardService.search({
       name: "",
       pageNumber: 0,
@@ -111,8 +114,8 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
 
   loading$: Observable<boolean> = this.dashboardService.isLoading$
-  takealotContentCount$: Observable<number> = this.dashboardService.takealotTotalCount$
-  takealotContent$: Observable<TakealotContentResponse[] | undefined | null> = this.dashboardService.takealotItems$
+  productContentCount$: Observable<number> = this.dashboardService.productTotalCount$
+  productContent$: Observable<TakealotContentResponse[] | undefined | null> = this.dashboardService.productItems$
 
   id: ProductKeys = 'id';
   name: ProductKeys = 'name';
@@ -129,11 +132,13 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
     { header: 'Name', field: this.name },
     {
       header: 'Last Updated', field: this.lastUpdated, formatter(rowData, colDef) {
-        return new Date(rowData.lastUpdated).toLocaleDateString()
+        return new Date(rowData.updatedAt).toLocaleDateString()
       },
     },
     { header: 'SKU', field: this.sku },
     { header: 'Stock Status', field: this.status, },
+     { header: 'Quantity', field: this.quantity, },
+      { header: 'Price', field: this.price, },
     {
       header: 'Actions', field: this.actions, type: 'button', disabled: true
     }
@@ -141,7 +146,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
   gridTemplate: MtxGridCellTemplate = { [this.status]: this.statusTemplate, [this.actions]: this.actionTemplate };
 
-  list: TakealotContentResponse[] = [];
+  list: ProductResponse[] = [];
 
   searchConfig: AdvancedSearchConfig = {
     generic: { label: 'Search by name', value: '', placeholder: 'Search by name' },
@@ -207,7 +212,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
   ngOnInit(): void {
 
-    this.takealotContent$.pipe().subscribe(x => {
+    this.productContent$.pipe().subscribe(x => {
       if (x) {
         this.list = x
       }
@@ -276,9 +281,28 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
               data: rowData,
               width: "50vw"
             })
-
   }
 
+  deleteProduct(id: string)
+  {
+
+    let dialogContent : ConfirmationDialogContent = {message: "Are you sure you want to delete this product?", 
+      buttons:DialogButtonText.NoYes}
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: dialogContent,
+      disableClose: true,
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+     this.dashboardService.delete(id);
+      }
+    });
+
+   
+  }
 
 
 
