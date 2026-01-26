@@ -53,3 +53,8 @@
 li[aria-expanded='false'] + ul[role='group'] {
   display: none;
 }
+
+ul[role='group'] {
+  margin-left: 1.25rem !important;   /* controls indentation */
+  padding-left: 1rem !important;  /* optional, depending on reset styles */
+}

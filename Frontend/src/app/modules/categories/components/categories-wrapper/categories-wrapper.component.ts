@@ -37,11 +37,11 @@ export class CategoriesWrapperComponent {
 
   constructor( private dialog: MatDialog,private categoriesState: CategoriesState) {
 
-    categoriesState.fetchCategories()
+    categoriesState.fetchCategoriesTree()
 
   }
   
-  readonly nodes$ = this.categoriesState.nodes$;
+  readonly nodes$ = this.categoriesState.treeNodes$;
   readonly selected = signal<string[]>([]);
 
 

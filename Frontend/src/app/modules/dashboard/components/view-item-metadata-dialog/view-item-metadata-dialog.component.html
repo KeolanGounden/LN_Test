@@ -77,10 +77,10 @@
       #treeItem="ngTreeItem"
     >
       <span aria-hidden="true" class="material-symbols-outlined expand-icon" translate="no">{{
-        node.children ? 'chevron_right' : ''
+        node.children.length > 0 ? 'chevron_right' : ''
       }}</span>
       <span aria-hidden="true" class="material-symbols-outlined" translate="no">{{
-        node.children ? 'folder' : 'docs'
+        node.children.length > 0 ? 'folder' : 'docs'
       }}</span>
       {{ node.name }}
       <span
@@ -91,7 +91,7 @@
         >check</span
       >
     </li>
-    @if (node.children) {
+    @if (node.children.length > 0) {
       <ul role="group">
         <ng-template ngTreeItemGroup [ownedBy]="treeItem" #group="ngTreeItemGroup">
           <ng-template

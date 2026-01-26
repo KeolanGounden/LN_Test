@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { CategoriesService, CategoryTreeDto } from '../../ct-client';
+import { CategoriesService, CategoryDto, CategoryTreeDto } from '../../ct-client';
 
 export type TreeNode = {
   name: string;
@@ -64,9 +64,11 @@ const initialNodes: TreeNode[] = [
 
 @Injectable({ providedIn: 'root' })
 export class CategoriesState {
-  private readonly nodesSubject = new BehaviorSubject<TreeNode[]>([]);
-  readonly nodes$: Observable<TreeNode[]> = this.nodesSubject.asObservable();
+  private readonly treeNodesSubject = new BehaviorSubject<TreeNode[]>([]);
+  readonly treeNodes$: Observable<TreeNode[]> = this.treeNodesSubject.asObservable();
 
+  private readonly categoriesFlatSubject = new BehaviorSubject<CategoryDto[]>([]);
+  readonly categoriesFlat$: Observable<CategoryDto[]> = this.categoriesFlatSubject.asObservable();
 
 
   constructor(private _categoryService:CategoriesService)
@@ -86,11 +88,19 @@ export class CategoriesState {
     }));
   }
 
-    fetchCategories(): void {
-    this._categoryService.apiCategoriesTreeGet() // <-- assumes this returns Observable<Category[]>
+    fetchCategoriesTree(): void {
+    this._categoryService.apiCategoriesTreeGet()
       .pipe(map((categories) => this.convertToTreeNodes(categories)))
       .subscribe((treeNodes) => {
-        this.nodesSubject.next(treeNodes);
+        this.treeNodesSubject.next(treeNodes);
+      });
+  }
+
+    fetchCategoriesFlat(): void {
+    this._categoryService.apiCategoriesGet() 
+      .pipe()
+      .subscribe((categories) => {
+        this.categoriesFlatSubject.next(categories);
       });
   }
 

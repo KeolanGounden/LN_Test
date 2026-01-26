@@ -67,7 +67,7 @@ export class ViewItemMetadataDialogComponent {
   @ViewChild('menuTemplate', { static: true }) menuTemplate!: TemplateRef<any>;
 
 
-  readonly nodes$ = this.categoriesState.nodes$;
+  readonly nodes$ = this.categoriesState.treeNodes$;
   readonly selected = signal<string[]>([]);
 
   form: FormGroup;
@@ -118,6 +118,7 @@ category: HeaderConfig = {
 
   constructor(@Inject(MAT_DIALOG_DATA) private content: TakealotContentResponse, private dialogRef: MatDialogRef<ViewItemMetadataDialogComponent>, private fb: FormBuilder, private cdr: ChangeDetectorRef, private categoriesState: CategoriesState) {
     this.item = content;
+    categoriesState.fetchCategoriesTree();
 
     if(content && content?.id)
     {
