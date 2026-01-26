@@ -70,6 +70,7 @@ export class CategoriesState {
   private readonly categoriesFlatSubject = new BehaviorSubject<CategoryDto[]>([]);
   readonly categoriesFlat$: Observable<CategoryDto[]> = this.categoriesFlatSubject.asObservable();
 
+  private isLoadingSubject = new BehaviorSubject<boolean>(false);
 
   constructor(private _categoryService:CategoriesService)
   {
@@ -102,6 +103,13 @@ export class CategoriesState {
       .subscribe((categories) => {
         this.categoriesFlatSubject.next(categories);
       });
+  }
+
+
+  clear() {
+    this.treeNodesSubject.next([]);
+    this.categoriesFlatSubject.next([]);
+    this.isLoadingSubject.next(false);
   }
 
 

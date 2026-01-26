@@ -15,10 +15,6 @@
             (page)="getNextPage($event)" [cellTemplate]="gridTemplate">
         </mtx-grid>
 
-        <ng-template #linkTemplate let-row>
-            <a class="no-underline mat-primary-color text-nowrap hover:underline" href="{{row.url}}"
-                routerLinkActive="true" target="_blank">{{row.url}}</a>
-        </ng-template>
 
         <ng-template #statusTemplate let-row>
 

@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDest
 import { MtxGrid, MtxGridCellTemplate, MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { DashboardService } from '../../states/dashboard.state';
 import { Observable } from 'rxjs';
-import { TakealotContentResponse, TakealotSearchRequest } from '../../../ct-client';
+import { ProductResponse, ProductSearchRequest, TakealotContentResponse, TakealotSearchRequest } from '../../../ct-client';
 import { AsyncPipe } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
@@ -32,7 +32,6 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   @ViewChild('headerRef') headerRef!: ElementRef<HTMLDivElement>;
   @ViewChild('table') table!: MtxGrid;
 
-  @ViewChild('linkTemplate', { static: true }) linkTemplate!: TemplateRef<any>;
   @ViewChild('statusTemplate', { static: true }) statusTemplate!: TemplateRef<any>;
   @ViewChild('actionTemplate', { static: true }) actionTemplate!: TemplateRef<any>;
 
@@ -115,12 +114,14 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   takealotContentCount$: Observable<number> = this.dashboardService.takealotTotalCount$
   takealotContent$: Observable<TakealotContentResponse[] | undefined | null> = this.dashboardService.takealotItems$
 
-  id: TakealotKeys = 'id';
-  name: TakealotKeys = 'name';
-  lastUpdated: TakealotKeys = 'lastUpdated';
-  productIdentifier: TakealotKeys = 'productIdentifier';
-  status: TakealotKeys = 'inStock';
-  url: TakealotKeys = 'url';
+  id: ProductKeys = 'id';
+  name: ProductKeys = 'name';
+  description:ProductKeys = 'description';
+  sku:ProductKeys = 'sku';
+  price:ProductKeys = 'price';
+  quantity:ProductKeys = 'quantity';
+  lastUpdated:ProductKeys = 'updatedAt';
+  status: ProductKeys = 'inStock';
   actions:string = 'actions'
 
   columns: MtxGridColumn[] = [
@@ -131,15 +132,14 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
         return new Date(rowData.lastUpdated).toLocaleDateString()
       },
     },
-    { header: 'Product Identifier', field: this.productIdentifier },
+    { header: 'SKU', field: this.sku },
     { header: 'Stock Status', field: this.status, },
-    { header: 'Product Link', field: this.url, type: 'link' },
     {
       header: 'Actions', field: this.actions, type: 'button', disabled: true
     }
   ];
 
-  gridTemplate: MtxGridCellTemplate = { [this.status]: this.statusTemplate, [this.url]: this.linkTemplate, [this.actions]: this.actionTemplate };
+  gridTemplate: MtxGridCellTemplate = { [this.status]: this.statusTemplate, [this.actions]: this.actionTemplate };
 
   list: TakealotContentResponse[] = [];
 
@@ -164,13 +164,13 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
         }
       },
       {
-        key: this.productIdentifier,
-        label: "Product Identifier",
+        key: this.sku,
+        label: "SKU",
         type: "text",
-        placeholder: "Product Identifier",
+        placeholder: "SKU",
         filterDisplay: (config, value: string) => {
           if (value) {
-            var result = `Product Identifier contains: ${value}`
+            var result = `SKU contains: ${value}`
             return [result];
           }
           else {
@@ -225,7 +225,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
     this.setUpResizeObserver();
 
-    this.gridTemplate = { [this.status]: this.statusTemplate, [this.url]: this.linkTemplate, [this.actions]: this.actionTemplate };
+    this.gridTemplate = { [this.status]: this.statusTemplate, [this.actions]: this.actionTemplate };
 
   }
 
@@ -253,12 +253,12 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
     this.queryParams.pageNumber = pageNumber ?? 0
 
 
-    let request: TakealotSearchRequest = {
+    let request: ProductSearchRequest = {
       name: event?.genericSearchTerm,
-      last_updated_start: event?.advancedSearchQuery?.find(x => x.key === this.lastUpdated)?.dateRangeConfig?.startDate,
-      last_updated_end: event?.advancedSearchQuery?.find(x => x.key === this.lastUpdated)?.dateRangeConfig?.endDate,
-      product_id: event?.advancedSearchQuery?.find(x => x.key === this.productIdentifier)?.value,
-      in_stock: event?.advancedSearchQuery?.find(x => x.key === this.status)?.value,
+      lastUpdatedStart: event?.advancedSearchQuery?.find(x => x.key === this.lastUpdated)?.dateRangeConfig?.startDate,
+      lastUpdatedEnd: event?.advancedSearchQuery?.find(x => x.key === this.lastUpdated)?.dateRangeConfig?.endDate,
+      sku: event?.advancedSearchQuery?.find(x => x.key === this.sku)?.value,
+      inStock: event?.advancedSearchQuery?.find(x => x.key === this.status)?.value,
       pageNumber: pageNumber ?? 0,
       pageSize: this.queryParams.pageSize
     }
@@ -283,5 +283,5 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
 
 }
-export type TakealotKeys = keyof TakealotContentResponse;
+export type ProductKeys = keyof ProductResponse;
 
