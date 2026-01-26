@@ -42,6 +42,10 @@ export class ProductsService extends BaseService {
     /**
      * @param name 
      * @param categoryId 
+     * @param lastUpdatedStart 
+     * @param lastUpdatedEnd 
+     * @param sku 
+     * @param inStock 
      * @param pageNumber 
      * @param pageSize 
      * @param sortBy 
@@ -49,24 +53,32 @@ export class ProductsService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiProductsGet(name?: string, categoryId?: string, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<ProductResponsePagedResult>;
-    public apiProductsGet(name?: string, categoryId?: string, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ProductResponsePagedResult>>;
-    public apiProductsGet(name?: string, categoryId?: string, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ProductResponsePagedResult>>;
-    public apiProductsGet(name?: string, categoryId?: string, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiProductsGet(name?: string, categoryId?: string, lastUpdatedStart?: Date, lastUpdatedEnd?: Date, sku?: string, inStock?: boolean, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<ProductResponsePagedResult>;
+    public apiProductsGet(name?: string, categoryId?: string, lastUpdatedStart?: Date, lastUpdatedEnd?: Date, sku?: string, inStock?: boolean, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ProductResponsePagedResult>>;
+    public apiProductsGet(name?: string, categoryId?: string, lastUpdatedStart?: Date, lastUpdatedEnd?: Date, sku?: string, inStock?: boolean, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ProductResponsePagedResult>>;
+    public apiProductsGet(name?: string, categoryId?: string, lastUpdatedStart?: Date, lastUpdatedEnd?: Date, sku?: string, inStock?: boolean, pageNumber?: number, pageSize?: number, sortBy?: string, descending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
           <any>name, 'name');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>categoryId, 'categoryId');
+          <any>categoryId, 'category_id');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>pageNumber, 'pageNumber');
+          <any>lastUpdatedStart, 'last_updated_start');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>pageSize, 'pageSize');
+          <any>lastUpdatedEnd, 'last_updated_end');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>sortBy, 'sortBy');
+          <any>sku, 'sku');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>descending, 'descending');
+          <any>inStock, 'in_stock');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageNumber, 'PageNumber');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageSize, 'PageSize');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>sortBy, 'SortBy');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>descending, 'Descending');
 
         let localVarHeaders = this.defaultHeaders;
 

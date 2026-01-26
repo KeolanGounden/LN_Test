@@ -20,9 +20,9 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<ProductResponse>>> Get([FromQuery] string? name, [FromQuery] Guid? categoryId, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10, [FromQuery] string? sortBy = null, [FromQuery] bool descending = false)
+        public async Task<ActionResult<PagedResult<ProductResponse>>> Get([FromQuery] ProductSearchRequest req)
         {
-            var req = new TakealotSearchRequest { Name = name, ProductId = null, PageNumber = pageNumber, PageSize = pageSize, SortBy = sortBy, Descending = descending };
+           
             var res = await _productService.SearchProducts(req);
             return Ok(res);
         }

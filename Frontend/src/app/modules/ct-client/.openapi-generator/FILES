@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
@@ -18,6 +17,7 @@ model/models.ts
 model/pagination-params.ts
 model/product-response-paged-result.ts
 model/product-response.ts
+model/product-search-request.ts
 model/takealot-content-response-paged-result.ts
 model/takealot-content-response.ts
 model/takealot-search-request.ts

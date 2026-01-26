@@ -48,7 +48,7 @@ namespace ProductManagementAPI.Services
             return list;
         }
 
-        public async Task<ProductManagementAPI.Extensions.PagedResult<ProductResponse>> SearchProducts(TakealotSearchRequest req)
+        public async Task<ProductManagementAPI.Extensions.PagedResult<ProductResponse>> SearchProducts(ProductSearchRequest req)
         {
             // Build base query with filters other than name
             var query = _repo.Query();
@@ -60,9 +60,9 @@ namespace ProductManagementAPI.Services
                 query = query.Where(x => x.UpdatedAt.Date >= req.LastUpdatedStart.Value.Date && x.UpdatedAt.Date <= req.LastUpdatedEnd.Value.Date);
             }
 
-            if (!string.IsNullOrWhiteSpace(req.ProductId))
+            if (!string.IsNullOrWhiteSpace(req.SKU))
             {
-                query = query.Where(x => x.SKU.Contains(req.ProductId));
+                query = query.Where(x => x.SKU.Contains(req.SKU));
             }
 
             if (req.InStock != null)
@@ -89,17 +89,12 @@ namespace ProductManagementAPI.Services
 
 
                 var totalCount = await query.CountAsync();
-                var items = await query.Skip(req.PageNumber * req.PageSize).Take(req.PageSize).ToListAsync();
 
-                var mapped = items.Select(e => ProductResponse.FromEntity(e, BuildCategoryHierarchy(e.CategoryId, allCategories))).ToList();
+                var mapped = query.Select(e => ProductResponse.FromEntity(e, BuildCategoryHierarchy(e.CategoryId, allCategories)));
 
-                return new ProductManagementAPI.Extensions.PagedResult<ProductResponse>
-                {
-                    Items = mapped,
-                    TotalCount = totalCount,
-                    PageNumber = req.PageNumber,
-                    PageSize = req.PageSize
-                };
+                var result = await mapped.ToPagedResultAsync(req);
+
+                return result;
             }
 
             var candidates = await query.OrderBy(x => x.Name).ToListAsync();
@@ -164,7 +159,7 @@ namespace ProductManagementAPI.Services
                 .Select(r => ProductResponse.FromEntity(r.Item, BuildCategoryHierarchy(r.Item.CategoryId, allCategories)))
                 .ToList();
 
-            return new ProductManagementAPI.Extensions.PagedResult<ProductResponse>
+            return new PagedResult<ProductResponse>
             {
                 Items = paged,
                 TotalCount = total,

@@ -174,7 +174,7 @@
             }
           },
           {
-            "name": "categoryId",
+            "name": "category_id",
             "in": "query",
             "schema": {
               "type": "string",
@@ -182,36 +182,63 @@
             }
           },
           {
-            "name": "pageNumber",
+            "name": "last_updated_start",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "type": "string",
+              "format": "date-time"
             }
           },
           {
-            "name": "pageSize",
+            "name": "last_updated_end",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
+              "type": "string",
+              "format": "date-time"
             }
           },
           {
-            "name": "sortBy",
+            "name": "sku",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "descending",
+            "name": "in_stock",
             "in": "query",
             "schema": {
-              "type": "boolean",
-              "default": false
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Descending",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -545,6 +572,46 @@
           }
         },
         "additionalProperties": false
+      },
+      "ProductSearchRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationParams"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "categoryId": {
+                "type": "string",
+                "format": "uuid",
+                "nullable": true
+              },
+              "lastUpdatedStart": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "lastUpdatedEnd": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "sku": {
+                "type": "string",
+                "nullable": true
+              },
+              "inStock": {
+                "type": "boolean",
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
       },
       "TakealotContentResponse": {
         "type": "object",
