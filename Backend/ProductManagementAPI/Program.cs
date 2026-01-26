@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductManagementAPI.Services;
 using ProductManagementAPI.Utils;
 using ChangeTrackerModel.DatabaseContext;
-using ChangeTrackerModel.Models.Config;
-using Microsoft.EntityFrameworkCore;
+using ProductManagementAPI.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,17 +31,17 @@ services.AddTransient(typeof(IProductSearchEngine<>), typeof(ProductSearchEngine
 
 // In-memory EF context for products
 services.AddDbContext<ProductManagementAPI.Data.InMemoryDbContext>(options => options.UseInMemoryDatabase("ProductsDb"), ServiceLifetime.Scoped);
-services.AddScoped<ProductManagementAPI.Repositories.ProductEntityRepository>();
-services.AddScoped<IRepository<ProductManagementAPI.Entities.ProductEntity>>(sp => sp.GetRequiredService<ProductManagementAPI.Repositories.ProductEntityRepository>());
-services.AddScoped<ProductManagementAPI.Services.ProductService>();
-services.AddScoped<ProductManagementAPI.Services.DatabaseSeeder>();
+services.AddScoped<ProductEntityRepository>();
+services.AddScoped<IRepository<ProductManagementAPI.Entities.ProductEntity>>(sp => sp.GetRequiredService<ProductEntityRepository>());
+services.AddScoped<ProductService>();
+services.AddScoped<DatabaseSeeder>();
 // repositories
-services.AddScoped<ProductManagementAPI.Interfaces.IProductRepository, ProductManagementAPI.Repositories.ProductRepository>();
-services.AddSingleton<ProductManagementAPI.Interfaces.ICategoryRepository, ProductManagementAPI.Repositories.CategoryRepository>();
+services.AddScoped<IProductRepository, ProductRepository>();
+services.AddSingleton<ICategoryRepository,CategoryRepository>();
 // services
-services.AddScoped<ProductManagementAPI.Interfaces.ICategoryService, ProductManagementAPI.Services.CategoryService>();
+services.AddScoped<ICategoryService, CategoryService>();
 // categories
-services.AddSingleton<ProductManagementAPI.Interfaces.ICategoryService, ProductManagementAPI.Services.CategoryService>();
+services.AddSingleton<ICategoryService, CategoryService>();
 
 
 services.AddHttpClient();
@@ -51,9 +50,6 @@ services.AddHttpClient();
 
 // Options
 services.AddOptions();
-services.Configure<PlatformConfig>(configuration.GetSection(nameof(PlatformConfig)));
-
-
 
 
 services.AddCors();

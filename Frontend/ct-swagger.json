@@ -1,30 +1,66 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ChangeTrackerAPI",
+    "title": "ProductManagementAPI",
     "version": "1.0"
   },
   "paths": {
-    "/api/platform-content/populate-takealot": {
+    "/api/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
-          "PlatformContent"
+          "Categories"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotPopulateRequest"
+                "$ref": "#/components/schemas/CreateCategoryRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotPopulateRequest"
+                "$ref": "#/components/schemas/CreateCategoryRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotPopulateRequest"
+                "$ref": "#/components/schemas/CreateCategoryRequest"
               }
             }
           },
@@ -37,80 +73,11 @@
         }
       }
     },
-    "/api/platform-content/find-takealot": {
-      "post": {
+    "/api/categories/tree": {
+      "get": {
         "tags": [
-          "PlatformContent"
+          "Categories"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotItemRequestedVTEvent"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotItemRequestedVTEvent"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotItemRequestedVTEvent"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/TakealotContentResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TakealotContentResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TakealotContentResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/platform-content/graph-takealot": {
-      "post": {
-        "tags": [
-          "PlatformContent"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotChartRequestedVTEvent"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotChartRequestedVTEvent"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotChartRequestedVTEvent"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "description": "OK",
@@ -119,7 +86,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TimeseriesData"
+                    "$ref": "#/components/schemas/CategoryTreeDto"
                   }
                 }
               },
@@ -127,7 +94,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TimeseriesData"
+                    "$ref": "#/components/schemas/CategoryTreeDto"
                   }
                 }
               },
@@ -135,7 +102,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TimeseriesData"
+                    "$ref": "#/components/schemas/CategoryTreeDto"
                   }
                 }
               }
@@ -193,18 +160,207 @@
         }
       }
     },
-    "/api/platform-content/signalr/{plid}": {
+    "/api/products": {
       "get": {
         "tags": [
-          "PlatformContent"
+          "Products"
         ],
         "parameters": [
           {
-            "name": "plid",
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "descending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponsePagedResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakealotContentResponse"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakealotContentResponse"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakealotContentResponse"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakealotContentResponse"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakealotContentResponse"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakealotContentResponse"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -218,6 +374,78 @@
   },
   "components": {
     "schemas": {
+      "CategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCategoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CategoryTreeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCategoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryTreeDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCategoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "PaginationParams": {
         "type": "object",
         "properties": {
@@ -229,7 +457,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "sortBy": {
+          "sort_by": {
             "type": "string",
             "nullable": true
           },
@@ -239,81 +467,81 @@
         },
         "additionalProperties": false
       },
-      "Point": {
+      "ProductResponse": {
         "type": "object",
         "properties": {
-          "x": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "y": {
-            "type": "number",
-            "format": "float",
-            "nullable": true
-          },
-          "formattedValue": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "TakealotChartRequested": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TakealotItemCreated"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false
-          }
-        ]
-      },
-      "TakealotChartRequestedVTEvent": {
-        "type": "object",
-        "properties": {
-          "sequence": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "event_id": {
+          "id": {
             "type": "string",
             "format": "uuid"
           },
-          "correlation_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "causation_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "data": {
-            "$ref": "#/components/schemas/TakealotChartRequested"
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "stream": {
-            "type": "string",
-            "nullable": true
-          },
-          "client_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "actor_id": {
+          "name": {
             "type": "string",
             "nullable": true
           },
           "description": {
             "type": "string",
             "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "categoryHierarchy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryDto"
+            },
+            "nullable": true
+          },
+          "inStock": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -372,100 +600,6 @@
         },
         "additionalProperties": false
       },
-      "TakealotItemCreated": {
-        "type": "object",
-        "properties": {
-          "plid": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "raw_value": {
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "TakealotItemRequested": {
-        "type": "object",
-        "properties": {
-          "plid": {
-            "type": "string",
-            "nullable": true
-          },
-          "url": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "TakealotItemRequestedVTEvent": {
-        "type": "object",
-        "properties": {
-          "sequence": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "event_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "correlation_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "causation_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "data": {
-            "$ref": "#/components/schemas/TakealotItemRequested"
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "stream": {
-            "type": "string",
-            "nullable": true
-          },
-          "client_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "actor_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "TakealotPopulateRequest": {
-        "type": "object",
-        "properties": {
-          "startIndex": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "endIndex": {
-            "type": "integer",
-            "format": "int64"
-          }
-        },
-        "additionalProperties": false
-      },
       "TakealotSearchRequest": {
         "allOf": [
           {
@@ -500,23 +634,6 @@
             "additionalProperties": false
           }
         ]
-      },
-      "TimeseriesData": {
-        "type": "object",
-        "properties": {
-          "points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Point"
-            },
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       }
     }
   }

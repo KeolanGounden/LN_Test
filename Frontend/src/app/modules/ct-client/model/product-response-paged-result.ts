@@ -7,11 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TakealotContentResponse } from './takealot-content-response';
+import { ProductResponse } from './product-response';
 
 
-export interface TakealotContentResponsePagedResult { 
-    items?: Array<TakealotContentResponse> | null;
+export interface ProductResponsePagedResult { 
+    items?: Array<ProductResponse> | null;
     totalCount?: number;
     pageNumber?: number;
     pageSize?: number;

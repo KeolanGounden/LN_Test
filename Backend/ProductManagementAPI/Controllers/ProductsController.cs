@@ -3,23 +3,24 @@ using ProductManagementAPI.Extensions;
 using ProductManagementAPI.Models;
 using ProductManagementAPI.Entities;
 using ProductManagementAPI.Interfaces;
+using ProductManagementAPI.Services;
 
 namespace ProductManagementAPI.Controllers
 {
     [Route("api/products")]
     public class ProductsController : Controller
     {
-        private readonly ProductManagementAPI.Services.ProductService _productService;
+        private readonly ProductService _productService;
         private readonly IRepository<ProductEntity> _repo;
 
-        public ProductsController(ProductManagementAPI.Services.ProductService productService, IRepository<ProductEntity> repo)
+        public ProductsController(ProductService productService, IRepository<ProductEntity> repo)
         {
             _productService = productService;
             _repo = repo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string? name, [FromQuery] Guid? categoryId, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10, [FromQuery] string? sortBy = null, [FromQuery] bool descending = false)
+        public async Task<ActionResult<PagedResult<ProductResponse>>> Get([FromQuery] string? name, [FromQuery] Guid? categoryId, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10, [FromQuery] string? sortBy = null, [FromQuery] bool descending = false)
         {
             var req = new TakealotSearchRequest { Name = name, ProductId = null, PageNumber = pageNumber, PageSize = pageSize, SortBy = sortBy, Descending = descending };
             var res = await _productService.SearchProducts(req);
@@ -27,7 +28,7 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<ActionResult<ProductResponse>> GetById(Guid id)
         {
             var resp = await _productService.GetByIdAsync(id);
             if (resp == null) return NotFound();

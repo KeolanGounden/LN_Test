@@ -2,7 +2,6 @@
 using ProductManagementAPI.Interfaces;
 using ProductManagementAPI.Models;
 using ChangeTrackerModel.DatabaseContext;
-using ChangeTrackerModel.Models.Config;
 using ChangeTrackerModel.Models.Data;
 using ChangeTrackerModel.Models.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -15,18 +14,15 @@ namespace ProductManagementAPI.Services
 {
     public class PlatformContentService : IPlatformContentService
     {
-        private HttpClient _httpClient;
+
         private readonly MySqlContext _context;
         private ILogger<PlatformContentService> _logger;
-        private PlatformConfig _platformConfig;
         private readonly IProductSearchEngine<PlatformContentTakealotEntity> _searchEngine;
 
-        public PlatformContentService(MySqlContext context, ILogger<PlatformContentService> logger, IHttpClientFactory httpClientFactory, IOptions<PlatformConfig> platformConfig, IProductSearchEngine<PlatformContentTakealotEntity> searchEngine)
+        public PlatformContentService(MySqlContext context, ILogger<PlatformContentService> logger,IProductSearchEngine<PlatformContentTakealotEntity> searchEngine)
         {
             _context = context;
             _logger = logger;
-            _httpClient = httpClientFactory.CreateClient();
-            _platformConfig = platformConfig.Value;
             _searchEngine = searchEngine;
             // configure searchable fields once to avoid reconfiguring (which rebuilds index) on each request
             var fields = new (Func<PlatformContentTakealotEntity, string> selector, double weight, string name)[]

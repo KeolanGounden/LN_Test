@@ -18,12 +18,6 @@ namespace ProductManagementAPI.Controllers
     
         }
 
-
-
-
-    
-
-
         [HttpPost("search-takealot")]
         [ProducesResponseType(typeof(PagedResult<TakealotContentResponse>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PagedResult<TakealotContentResponse>>> SearchTakealot(

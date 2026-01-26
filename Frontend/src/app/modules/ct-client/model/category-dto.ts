@@ -9,10 +9,10 @@
  */
 
 
-export interface PaginationParams { 
-    pageNumber?: number;
-    pageSize?: number;
-    sort_by?: string | null;
-    descending?: boolean;
+export interface CategoryDto { 
+    id?: string;
+    name?: string | null;
+    description?: string | null;
+    parentCategoryId?: string | null;
 }
 

@@ -1,5 +1,5 @@
 /**
- * ChangeTrackerAPI
+ * ProductManagementAPI
  *
  * 
  *
@@ -12,7 +12,7 @@
 export interface TakealotSearchRequest { 
     pageNumber?: number;
     pageSize?: number;
-    sortBy?: string | null;
+    sort_by?: string | null;
     descending?: boolean;
     name?: string | null;
     last_updated_start?: Date | null;

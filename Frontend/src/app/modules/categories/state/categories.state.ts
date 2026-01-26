@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { CategoriesService, CategoryTreeDto } from '../../ct-client';
 
 export type TreeNode = {
   name: string;
@@ -63,12 +64,35 @@ const initialNodes: TreeNode[] = [
 
 @Injectable({ providedIn: 'root' })
 export class CategoriesState {
-  private readonly nodesSubject = new BehaviorSubject<TreeNode[]>(initialNodes);
-
+  private readonly nodesSubject = new BehaviorSubject<TreeNode[]>([]);
   readonly nodes$: Observable<TreeNode[]> = this.nodesSubject.asObservable();
 
-  // In future this can call an API and push new values via `nodesSubject.next(...)`.
-  load(nodes: TreeNode[]) {
-    this.nodesSubject.next(nodes);
+
+
+  constructor(private _categoryService:CategoriesService)
+  {
+
   }
+
+  private convertToTreeNodes(categories: CategoryTreeDto[]): TreeNode[] {
+    return categories.map((category) => ({
+      name: category.name ?? "",
+      value: category.id ?? "",
+      children: category.children?.length
+        ? this.convertToTreeNodes(category.children)
+        : [],
+      disabled: false,
+      expanded: true,
+    }));
+  }
+
+    fetchCategories(): void {
+    this._categoryService.apiCategoriesTreeGet() // <-- assumes this returns Observable<Category[]>
+      .pipe(map((categories) => this.convertToTreeNodes(categories)))
+      .subscribe((treeNodes) => {
+        this.nodesSubject.next(treeNodes);
+      });
+  }
+
+
 }

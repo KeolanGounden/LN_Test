@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
 
+
+
 [ngTree] {
   min-width: 24rem;
   background-color: var(--septenary-contrast);
@@ -52,4 +54,9 @@
 }
 li[aria-expanded='false'] + ul[role='group'] {
   display: none;
+}
+
+ul[role='group'] {
+  margin-left: 1.25rem !important;   /* controls indentation */
+  padding-left: 1rem !important;  /* optional, depending on reset styles */
 }

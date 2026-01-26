@@ -16,14 +16,14 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAll()
         {
             var all = await _categoryService.GetAllAsync();
             return Ok(all);
         }
 
         [HttpGet("tree")]
-        public async Task<IActionResult> GetTree()
+        public async Task<ActionResult<IEnumerable<CategoryTreeDto>>> GetTree()
         {
             var tree = await _categoryService.GetTreeAsync();
             return Ok(tree);
