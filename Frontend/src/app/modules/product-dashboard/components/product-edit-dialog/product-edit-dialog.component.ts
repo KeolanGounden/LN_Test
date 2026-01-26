@@ -55,11 +55,11 @@ import { CategoriesState } from '../../../categories/state/categories.state';
     NgTemplateOutlet,
     AsyncPipe
 ],
-  templateUrl: './view-item-metadata-dialog.component.html',
-  styleUrls: ['./view-item-metadata-dialog.component.scss'],
+  templateUrl: './product-edit-dialog.component.html',
+  styleUrls: ['./product-edit-dialog.component.scss'],
   providers: [provideNativeDatetimeAdapter()]
 })
-export class ViewItemMetadataDialogComponent {
+export class ProductEditDialogComponent {
 
 
   item: TakealotContentResponse;
@@ -116,7 +116,7 @@ category: HeaderConfig = {
 
 
 
-  constructor(@Inject(MAT_DIALOG_DATA) private content: TakealotContentResponse, private dialogRef: MatDialogRef<ViewItemMetadataDialogComponent>, private fb: FormBuilder, private cdr: ChangeDetectorRef, private categoriesState: CategoriesState) {
+  constructor(@Inject(MAT_DIALOG_DATA) private content: TakealotContentResponse, private dialogRef: MatDialogRef<ProductEditDialogComponent>, private fb: FormBuilder, private cdr: ChangeDetectorRef, private categoriesState: CategoriesState) {
     this.item = content;
     categoriesState.fetchCategoriesTree();
 

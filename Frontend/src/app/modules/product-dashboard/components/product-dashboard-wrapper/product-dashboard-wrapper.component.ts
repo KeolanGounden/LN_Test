@@ -13,20 +13,21 @@ import { ButtonConfig, ButtonType } from '../../../shared/models/button-config.m
 import { MtxDrawer, MtxDrawerModule } from '@ng-matero/extensions/drawer';
 import { TableReorderDrawerComponent } from '../../../shared/components/table-reorder-drawer/table-reorder-drawer.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ViewItemMetadataDialogComponent } from '../view-item-metadata-dialog/view-item-metadata-dialog.component';
+
 import { Router } from '@angular/router';
 import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import {MatButtonModule} from '@angular/material/button';
+import { ProductEditDialogComponent } from '../product-edit-dialog/product-edit-dialog.component';
 
 
 @Component({
   selector: 'app-dashboard-wrapper',
   imports: [MtxGridModule, AsyncPipe, MatCardModule, HeaderGroupComponent, MtxDrawerModule, MatMenuModule, MatIconModule,MatButtonModule],
-  templateUrl: './dashboard-wrapper.component.html',
-  styleUrl: './dashboard-wrapper.component.scss'
+  templateUrl: './product-dashboard-wrapper.component.html',
+  styleUrl: './product-dashboard-wrapper.component.scss'
 })
-export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('headerRef') headerRef!: ElementRef<HTMLDivElement>;
   @ViewChild('table') table!: MtxGrid;
@@ -270,7 +271,7 @@ export class DashboardWrapperComponent implements OnInit, AfterViewInit, OnDestr
   openViewDialog(rowData?: TakealotContentResponse)
   {
 
-     this.dialog.open(ViewItemMetadataDialogComponent, {
+     this.dialog.open(ProductEditDialogComponent, {
               disableClose:true,
               data: rowData,
               width: "50vw"
