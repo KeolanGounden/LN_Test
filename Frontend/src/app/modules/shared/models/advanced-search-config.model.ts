@@ -1,3 +1,7 @@
+import { Observable } from "rxjs";
+import { TreeNode } from "./tree-node.model";
+
+
 export interface AdvancedSearchConfig {
   generic: GenericSearchConfig;
   fields: AdvancedSearchFieldConfig[];
@@ -7,8 +11,9 @@ export interface AdvancedSearchFieldConfig {
   key: string;
   label: string;
   filterDisplay: (config: AdvancedSearchConfig, value: any) => string[]
-  type: 'text' | 'select' | 'date' | 'dateRange' | 'checkbox';
+  type: 'text' | 'select' | 'date' | 'dateRange' | 'checkbox' | 'tree';
   selectOptions?: SelectOption;
+  treeOptions?: Observable<TreeNode[] | null | undefined> 
   placeholder?: string;
 }
 

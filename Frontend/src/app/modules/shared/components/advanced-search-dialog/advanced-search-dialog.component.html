@@ -67,12 +67,70 @@
           @if(field.type === 'checkbox'){
           <mat-checkbox formControlName="{{field.key}}">{{ field.label }}</mat-checkbox>
           }
+
+          @if(field.type === 'tree')
+          {
+
+
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="{{field.key}}">
+          </mat-form-field>
+
+          
+          }
+
+
           }
           }
 
         </form>
+
+        @if(treeFormKeys.length > 0)
+        {
+            <ul ngTree #tree="ngTree" [(values)]="selected" class="basic-tree">
+                        <ng-template
+                          [ngTemplateOutlet]="treeNodes"
+                          [ngTemplateOutletContext]="{nodes: (treeNode |async) || [], parent: tree}"
+                        />
+                        </ul>
+        }
+
       </mat-card-content>
     </mat-card>
   </ng-template>
 
+      <ng-template #treeNodes let-nodes="nodes" let-parent="parent">
+  @for (node of nodes; track node.value) {
+    <li
+      ngTreeItem
+      [parent]="parent"
+      [value]="node.value"
+      [label]="node.name"
+      [disabled]="node.disabled"
+      [(expanded)]="node.expanded"
+      #treeItem="ngTreeItem"
+    >
+      <span aria-hidden="true" class="material-symbols-outlined expand-icon" translate="no">{{
+        node.children.length > 0 ? 'chevron_right' : ''
+      }}</span>
+      <span aria-hidden="true" class="material-symbols-outlined" translate="no">{{
+        node.children.length > 0 ? 'folder' : 'docs'
+      }}</span>
+      {{ node.name }}
+    </li>
+    @if (node.children.length > 0) {
+      <ul role="group">
+        <ng-template ngTreeItemGroup [ownedBy]="treeItem" #group="ngTreeItemGroup">
+          <ng-template
+            [ngTemplateOutlet]="treeNodes"
+            [ngTemplateOutletContext]="{nodes: node.children, parent: group}"
+          />
+        </ng-template>
+      </ul>
+    }
+  }
+</ng-template>
+
 </app-sliding-form>
+

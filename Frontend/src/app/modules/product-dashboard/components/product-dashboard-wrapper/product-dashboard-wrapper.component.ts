@@ -22,6 +22,8 @@ import { ProductState } from '../../states/product.state';
 import { ConfirmationDialogContent } from '../../../shared/models/confirmation-dialog';
 import { DialogButtonText } from '../../../shared/models/dialog-button-text.enum';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { CategoriesState } from '../../../categories/state/categories.state';
+import { TreeNode } from '../../../shared/models/tree-node.model';
 
 @Component({
   selector: 'app-dashboard-wrapper',
@@ -39,6 +41,8 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
   observer: ResizeObserver | undefined;
   gridHeight = "100vh"
+
+
 
   queryParams: ProductSearchRequest = { pageSize: 25, pageNumber: 0 }
 
@@ -101,7 +105,9 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
     advancedSearchQuery: []
   }
 
-  constructor(private dashboardService: ProductState, private cdr: ChangeDetectorRef, private drawer: MtxDrawer, private dialog: MatDialog, private _ngZone: NgZone, private _router: Router) {
+  constructor(private dashboardService: ProductState, private cdr: ChangeDetectorRef, private drawer: MtxDrawer, private dialog: MatDialog, private categoriesState: CategoriesState) {
+   categoriesState.fetchCategoriesTree();
+   
     this.dashboardService.search({
       name: "",
       pageNumber: 0,
@@ -115,6 +121,8 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   loading$: Observable<boolean> = this.dashboardService.isLoading$
   productContentCount$: Observable<number> = this.dashboardService.productTotalCount$
   productContent$: Observable<ProductResponse[] | undefined | null> = this.dashboardService.productItems$
+
+  readonly nodes$ = this.categoriesState.treeNodes$;
 
   id: ProductKeys = 'id';
   name: ProductKeys = 'name';
@@ -151,6 +159,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   gridTemplate: MtxGridCellTemplate = { [this.status]: this.statusTemplate, [this.actions]: this.actionTemplate };
 
   list: ProductResponse[] = [];
+  categories:TreeNode[] =[]
 
   searchConfig: AdvancedSearchConfig = {
     generic: { label: 'Search by name', value: '', placeholder: 'Search by name' },
@@ -210,6 +219,27 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
           }
         },
       },
+            {
+        key: this.categoryId,
+        label: "Category",
+        type: "tree",
+       treeOptions: this.nodes$,
+        placeholder: "Category",
+        filterDisplay: (config, value: string) => {
+          if (value !== null) {
+
+            let heirarchy = this.categoriesState.getHierarchy(value)
+          
+            let result = `Category: ${heirarchy?.map(x=>x).join(" > ") ?? ''}`
+
+           
+            return [result];
+          }
+          else {
+            return []
+          }
+        },
+      },
 
     ]
   };
@@ -219,6 +249,13 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
     this.productContent$.pipe().subscribe(x => {
       if (x) {
         this.list = x
+      }
+
+    })
+
+        this.nodes$.pipe().subscribe(x => {
+      if (x.length > 0) {
+        this.categories = x
       }
 
     })
@@ -268,6 +305,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
       lastUpdatedEnd: event?.advancedSearchQuery?.find(x => x.key === this.lastUpdated)?.dateRangeConfig?.endDate,
       sku: event?.advancedSearchQuery?.find(x => x.key === this.sku)?.value,
       inStock: event?.advancedSearchQuery?.find(x => x.key === this.status)?.value,
+      categoryId:  event?.advancedSearchQuery?.find(x => x.key === this.categoryId)?.value,
       pageNumber: pageNumber ?? 0,
       pageSize: this.queryParams.pageSize
     }

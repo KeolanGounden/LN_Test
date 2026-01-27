@@ -1,14 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { CategoriesService, CategoryDto, CategoryTreeDto } from '../../ct-client';
+import { TreeNode } from '../../shared/models/tree-node.model';
 
-export type TreeNode = {
-  name: string;
-  value: string;
-  children?: TreeNode[];
-  disabled?: boolean;
-  expanded?: boolean;
-};
 
 
 @Injectable({ providedIn: 'root' })
@@ -53,6 +47,30 @@ export class CategoriesState {
         this.categoriesFlatSubject.next(categories);
       });
   }
+
+
+  getHierarchy(targetId: string)
+  {
+      let categories = this.treeNodesSubject.getValue();
+      return this.findPath(categories, targetId);
+  }
+
+private findPath(categories: TreeNode[], targetId: string): string[] | null {
+  for (const category of categories) {
+    if (category.value === targetId) {
+      return [category.name ?? ""];
+    }
+
+    if (category.children && category.children.length > 0) {
+      const childPath = this.findPath(category.children, targetId);
+      if (childPath) {
+        return [category.name ?? "", ...childPath];
+      }
+    }
+  }
+  return null;
+}
+
 
 
   clear() {

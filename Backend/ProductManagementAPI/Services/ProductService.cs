@@ -48,12 +48,15 @@ namespace ProductManagementAPI.Services
             return list;
         }
 
+
+
         public async Task<ProductManagementAPI.Extensions.PagedResult<ProductResponse>> SearchProducts(ProductSearchRequest req)
         {
             // Build base query with filters other than name
             var query = _repo.Query();
 
             var allCategories = (await _catRepo.GetAllAsync()).ToList();
+           
 
             if (req.LastUpdatedStart != null && req.LastUpdatedEnd != null)
             {
@@ -71,6 +74,17 @@ namespace ProductManagementAPI.Services
                     query = query.Where(x => x.Quantity > 0);
                 else
                     query = query.Where(x => x.Quantity == 0);
+            }
+
+            if(req.categoryId != null)
+            {
+                var hierarchy = BuildCategoryHierarchy(req.categoryId, allCategories);
+                var ids = hierarchy.Select(c => c.Id).ToList();
+
+                query = query.Where(x => x.CategoryId.HasValue && ids.Contains(x.CategoryId.Value));
+
+
+
             }
 
             // If no name provided, fall back to database paging

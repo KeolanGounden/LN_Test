@@ -1,11 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, effect, Inject, signal } from '@angular/core';
 import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AdvancedSearchDialogData } from '../../models/advanced-search-config.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { SlidingFormComponent } from '../sliding-form/sliding-form.component';
@@ -20,10 +20,17 @@ import { MtxDatetimepicker, MtxDatetimepickerModule } from '@ng-matero/extension
 import { provideNativeDatetimeAdapter } from '@ng-matero/extensions/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TemplateIdDirective } from '../../directives/template-id-directive.directive';
+import { Tree, TreeItem, TreeItemGroup } from '@angular/aria/tree';
+import { TreeNode } from '../../models/tree-node.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-advanced-search-dialog',
-  imports: [MatCheckboxModule, MatNativeDateModule, MtxDatetimepickerModule, MatDatepickerModule, MatRadioModule, MatCardModule, SlidingFormComponent, TemplateIdDirective, MtxSelectModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatIconModule, MatDialogModule, MatDialogModule, MatButtonModule, MatDividerModule],
+  imports: [MatCheckboxModule, MatNativeDateModule, MtxDatetimepickerModule, MatDatepickerModule, MatRadioModule, MatCardModule, SlidingFormComponent, TemplateIdDirective, MtxSelectModule, FormsModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatIconModule, MatDialogModule, MatDialogModule, MatButtonModule, MatDividerModule,
+    Tree, 
+    TreeItem, 
+    TreeItemGroup, 
+    NgTemplateOutlet, AsyncPipe],
   providers: [provideNativeDateAdapter(), provideNativeDatetimeAdapter(), DatePipe,],
   templateUrl: './advanced-search-dialog.component.html',
   styleUrl: './advanced-search-dialog.component.scss'
@@ -44,6 +51,11 @@ export class AdvancedSearchDialogComponent {
     }
   ]
   mainId = this.views[0].name;
+
+  treeFormKeys:string[] = []
+  treeNode:Observable<TreeNode[] | null | undefined> | null = null
+
+  readonly selected = signal<string[]>([]);
 
   dateTimePickerRef: { [key: string]: MtxDatetimepicker<Date> } = {};
 
@@ -83,12 +95,32 @@ export class AdvancedSearchDialogComponent {
           }
         }
 
+        if(field.type === 'tree')
+        {
+         this.treeNode = field.treeOptions ?? null
+          let treeKey = field.key
+          this.treeFormKeys.push(treeKey)
+           this.form.addControl(treeKey, this.fb.control(null));
+        }
+
         if (field.type === 'date') {
           this.dateTimePickerRef[field.key] = new MtxDatetimepicker<Date>();
         }
       }
     });
+
+    effect(() => {
+      
+      this.treeFormKeys.forEach(element => {
+        this.form.controls[element].setValue(this.selected()[0])
+      });
+
+    });
+
+
+
   }
+
 
   submit() {
     this.dialogRef.close(this.form.value);
