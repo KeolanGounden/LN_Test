@@ -12,28 +12,17 @@ This repository contains an Angular frontend and an ASP.NET backend for Product 
 - `Backend/` — ASP.NET solution and API (ProductManagementAPI)
 - `Frontend/` — Angular application
 
-## Build and run (local, no Docker)
+## Build and run using Docker
 
-1) Backend (ASP.NET)
+Docker compose files are in `Backend/`.
 
- - Open a terminal and go to the backend folder:
+From the repo root or `Backend/` directory:
 
 ```powershell
 cd Backend
+docker-compose up --build
 ```
 
- - Restore and build the solution:
-
-```powershell
-dotnet restore ProductManagement.sln
-dotnet build ProductManagement.sln -c Debug
-```
-
- - Run the API (development):
-
-```powershell
-dotnet run --project ProductManagementAPI/ProductManagementAPI.csproj
-```
 
  By default the API will bind to the ports configured in `docker-compose.override.yml`; typical local URL is `http://localhost:17475` (check docker).
 
@@ -58,20 +47,7 @@ ng serve --open
 
 3) Accessing the app
 
- - Visit the frontend URL in your browser (typically `http://localhost:4200`). The frontend will make API calls to the backend;
-
-## Build and run using Docker Compose
-
-- Docker compose files are in `Backend/`.
-
-From the repo root or `Backend/` directory:
-
-```powershell
-cd Backend
-docker-compose up --build
-```
-
-This will build the backend image and start the service. 
+ - Visit the frontend URL in your browser (typically `http://localhost:4200`). The frontend will make API calls to the backend; 
 
 ## Tests
 

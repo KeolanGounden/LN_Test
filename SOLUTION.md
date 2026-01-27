@@ -15,19 +15,18 @@ This document explains the architecture, design decisions, and trade-offs for th
 
  - Decision: Use a monorepo for frontend and backend.
  - Rationale: Easier local development, single source for coordinating API/consumer changes, simpler developer onboarding for smaller projects.
- - Trade-offs: Repo can grow and require stricter CI rules; independent lifecycle for frontend/backend is harder.
 
 2) Layered backend (Controllers → Services → Repositories)
 
  - Decision: Keep clear separation between HTTP layer, business logic, and data access.
  - Rationale: Improves testability and maintainability; easier to mock dependencies in unit tests.
- - Trade-offs: Slightly more boilerplate; requires discipline to avoid leaking business logic into controllers.
+ - Trade-offs: Slightly more boilerplate;
 
 3) Use of in-memory or simple data layer for development
 
  - Decision: Development includes in-memory or simplified data contexts to speed local iteration.
  - Rationale: Fast setup for developers; no DB dependency for local runs.
- - Trade-offs: Integration issues can appear when switching to a real DB; add integration tests and migration scripts when preparing for production.
+
 
 4) Containerization with Docker Compose
 
@@ -41,24 +40,11 @@ This document explains the architecture, design decisions, and trade-offs for th
  - Rationale: Standard, easy to consume from SPAs.
 
 
-## Security and production considerations
+## Security
 
-- Secrets: Don't store secrets in repo; use environment variables or secret stores (Azure Key Vault, etc.).
-- Auth: The repo currently focuses on product management endpoints; if authentication is needed, add standard auth flows (OpenID Connect, JWT) and middleware.
+- Auth: The repo currently focuses on product management endpoints; 
 - HTTPS: Ensure production endpoints are served over TLS; for local dev use Kestrel dev certs or a reverse proxy.
 
-## Testing strategy
-
-- Unit tests: Add xUnit/NUnit tests for backend services and repository logic.
-- Integration tests: Use an ephemeral real DB (e.g., local SQL Server or Postgres in CI) or use testcontainers for accurate integration tests.
-- Frontend tests: Use Jest or Karma+Jasmine for unit tests and Cypress for e2e tests.
-
-
-## Future improvements
-
-- Add end-to-end tests and pipeline enforcement for PRs.
-- Standardize environment/configuration approach across frontend and backend.
-- Add observability (Application Insights, structured logging, distributed tracing).
 
 ## Final notes
 
