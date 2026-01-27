@@ -7,16 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProductManagementAPI.Repositories
 {
-    // in-memory category repository implementation using base Repository isn't applicable because base uses MySqlContext.
-    // Provide a specialized in-memory repo that still implements IRepository<CategoryDto>.
+
     public class CategoryRepository : ICategoryRepository
     {
         private readonly Dictionary<Guid, CategoryDto> _store = new();
-
-        public CategoryRepository()
-        {
-            // no seeding here; seeding moved to DatabaseSeeder
-        }
 
         public IQueryable<CategoryDto> Query() => _store.Values.AsQueryable();
 

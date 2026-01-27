@@ -1,1 +1,62 @@
-<p>category-edit-dialog works!</p>
+<app-sliding-form [views]="views">
+    <ng-template [templateId]="mainId">
+
+                <mat-card class="mat-elevation-z0 !p-0">
+                    <mat-card-content>
+
+                        <app-content-header [headerConfig]="details">
+                        </app-content-header>
+
+                         <form [formGroup]="form">
+
+
+                        <mat-form-field>
+                            <mat-label>Name</mat-label>
+                            <input   formControlName="name" matInput />
+                            <mat-error>Required</mat-error>
+                        </mat-form-field>
+
+   
+
+                       
+
+                        <mat-form-field >
+                        <mat-label>Description</mat-label>
+                        <textarea  formControlName="description" matInput
+                                    cdkTextareaAutosize
+                                    #autosize="cdkTextareaAutosize"
+                                    cdkAutosizeMinRows="1"
+                                    cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-error>Required</mat-error>
+                        </mat-form-field>
+
+                         <mat-form-field>
+                                <mat-label>Parent Category</mat-label>
+                                <mtx-select formControlName="parent" 
+                                [placeholder]='"Select Parent Category (Optional)"'
+                                    [appendTo]="'body'">
+                                    @for ((opt of nodes$| async); track opt) {
+                                    <mtx-option [value]="opt.id">
+                                        {{opt.name}}
+                                    </mtx-option>
+                                    }
+                                </mtx-select>
+                                 <mat-hint>Optional. Leave unset to create new root category</mat-hint>
+                            </mat-form-field>
+                       
+
+            </form>
+                      
+
+                    </mat-card-content>
+                </mat-card>
+
+
+              
+
+    </ng-template>
+
+
+   
+
+</app-sliding-form>

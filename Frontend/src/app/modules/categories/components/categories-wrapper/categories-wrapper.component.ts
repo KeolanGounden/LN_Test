@@ -7,6 +7,7 @@ import {Tree, TreeItem, TreeItemGroup} from '@angular/aria/tree';
 import { MatDialog } from '@angular/material/dialog';
 import { ButtonConfig, ButtonType } from '../../../shared/models/button-config.model';
 import { ButtonRowComponent } from "../../../shared/components/button-row/button-row.component";
+import { CategoryEditDialogComponent } from '../category-edit-dialog/category-edit-dialog.component';
 
 @Component({
   selector: 'app-categories-wrapper',
@@ -28,7 +29,7 @@ export class CategoriesWrapperComponent {
     
         {
           icon: "add_task",
-          action: () =>  this.openViewDialog() ,
+          action: () =>  this.openEditDialog() ,
           type: ButtonType.Flat,
           tooltip: "Add Category",
           label: "Add Category"
@@ -45,10 +46,13 @@ export class CategoriesWrapperComponent {
   readonly selected = signal<string[]>([]);
 
 
-    openViewDialog()
+    openEditDialog()
     {
   
-    
+     this.dialog.open(CategoryEditDialogComponent, {
+                  disableClose:true,
+                  width: "50vw"
+                })
   
     }
 

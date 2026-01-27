@@ -130,7 +130,7 @@ namespace ProductManagementAPI.Services
             return final;
         }
 
-        // Non-mutating search against a provided candidate set. Does not replace engine dataset or rebuild index.
+        // Non-mutating search against a provided candidate set.
         public IEnumerable<SearchResult<T>> Search(IEnumerable<T> candidates, string query, int maxResults = 20, double minScore = 0.05)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -146,7 +146,7 @@ namespace ProductManagementAPI.Services
                 return cached.Results;
             }
 
-            // build temporary indexed items for candidates only (avoid mutating engine state)
+            // build temporary indexed items for candidates only
             var tempIndexed = new List<IndexedItem>();
             foreach (var c in candidates)
                 tempIndexed.Add(BuildIndexedItem(c));
@@ -351,7 +351,7 @@ namespace ProductManagementAPI.Services
             return Math.Max(0.0, Math.Min(1.0, sim));
         }
 
-        // classic iterative Levenshtein distance
+   
         private static int Levenshtein(string a, string b)
         {
             var n = a.Length;
@@ -359,7 +359,7 @@ namespace ProductManagementAPI.Services
             if (n == 0) return m;
             if (m == 0) return n;
 
-            // swap to use less space
+           
             if (n > m)
             {
                 var tmp = a; a = b; b = tmp;
