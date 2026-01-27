@@ -226,7 +226,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
        treeOptions: this.nodes$,
         placeholder: "Category",
         filterDisplay: (config, value: string) => {
-          if (value !== null) {
+          if (value !== null && value !== undefined) {
 
             let heirarchy = this.categoriesState.getHierarchy(value)
           

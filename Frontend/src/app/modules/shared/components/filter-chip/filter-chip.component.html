@@ -1,5 +1,16 @@
+<mat-chip class="!py-4 mr-1"
+    [removable]="config.required === undefined || config.required === null || config.required === false"
+    (removed)="filterRemoved()">
+    <div class="flex flex-row items-center gap-1">
+        {{ config?.label }}
+        @if(config.required === undefined || config.required === null || config.required === false){
+        <mat-icon matChipRemove>close</mat-icon>
+        }
+        @else{
+        <button mat-icon-button class="!size-[24px] !text-[24px] !p-0 btn" (click)="openDialog()">
+            <mat-icon class="!size-[18px] !text-[18px]">tune</mat-icon>
+        </button>
+        }
+    </div>
 
-<mat-chip removable="true" (removed)="filterRemoved()">
-    {{ config?.label }}
-    <mat-icon class="scale-[0.8]" matChipRemove>close</mat-icon>
 </mat-chip>

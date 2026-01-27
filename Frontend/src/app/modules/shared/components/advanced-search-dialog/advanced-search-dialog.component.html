@@ -72,8 +72,8 @@
           {
 
 
-          <mat-form-field class="w-full" appearance="outline">
-            <mat-label>Category</mat-label>
+          <mat-form-field [hidden]="true" class="w-full" appearance="outline">
+            <mat-label>{{field.label}}</mat-label>
             <input matInput formControlName="{{field.key}}">
           </mat-form-field>
 
@@ -85,19 +85,25 @@
           }
 
         </form>
+      </mat-card-content>
+    </mat-card>
 
+   
         @if(treeFormKeys.length > 0)
         {
+           <mat-card>
+      <mat-card-content>
+          <h1 class="text-base font-medium">Category</h1>
             <ul ngTree #tree="ngTree" [(values)]="selected" class="basic-tree">
                         <ng-template
                           [ngTemplateOutlet]="treeNodes"
                           [ngTemplateOutletContext]="{nodes: (treeNode |async) || [], parent: tree}"
                         />
                         </ul>
-        }
-
-      </mat-card-content>
+         </mat-card-content>
     </mat-card>
+        }
+     
   </ng-template>
 
       <ng-template #treeNodes let-nodes="nodes" let-parent="parent">

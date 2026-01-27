@@ -1,32 +1,77 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FilterChipComponent } from '../filter-chip/filter-chip.component';
+import { afterNextRender, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FilterChipComponent, FilterChipConfig } from '../filter-chip/filter-chip.component';
 import { MatChipsModule } from '@angular/material/chips';
-
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { AdvancedSearchQuery, FilterRemovedEvent } from '../../models/advanced-search-config.model';
+import { AdvancedSearchQuery } from '../../models/advanced-search-config.model';
 
 @Component({
   selector: 'app-filter-chip-row',
-  imports: [FilterChipComponent, MatChipsModule, MatButtonModule, MatIconModule],
+  imports: [FilterChipComponent, MatChipsModule, CommonModule, MatButtonModule, MatIconModule],
   templateUrl: './filter-chip-row.component.html',
-  styleUrl: './filter-chip-row.component.scss'
+  styleUrl: './filter-chip-row.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class FilterChipRowComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   @Input() config: AdvancedSearchQuery[] | null = null;
-  @Output() filterChanged = new EventEmitter<FilterRemovedEvent>();
-  @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
+  @Output() filterChanged = new EventEmitter<FilterChipConfig>();
+  @Output() editClicked = new EventEmitter<FilterChipConfig>();
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
 
+  observer: ResizeObserver = new ResizeObserver(() => { });
 
   showLeft = false;
   showRight = false;
 
-  onFilterRemoved(event: string, index?: number) {
-    this.filterChanged.emit({ event, index });
+  constructor() {
+    afterNextRender(() => {
+      this.setUpResizeObserver();
+
+    })
+  }
+  ngAfterViewInit() {
+
+    const scrollEl = this.scrollContainer.nativeElement;
+
+    scrollEl.addEventListener('scroll',
+      () => this.updateScrollButtons()
+    );
+
+    this.observer = new ResizeObserver(_ => {
+      this.updateScrollButtons();
+    });
+
+    this.updateScrollButtons();
+  }
+
+  ngOnDestroy(): void {
+    const scrollEl = this.scrollContainer.nativeElement;
+
+
+    this.observer.unobserve(scrollEl);
+
+
+  }
+
+  setUpResizeObserver(): void {
+    let element = this.scrollContainer.nativeElement
+
+    if (element) {
+      this.observer.observe(element);
+    }
+  }
+
+  onFilterRemoved(config: FilterChipConfig) {
+    this.filterChanged.emit(config);
     setTimeout(() => {
       this.updateScrollButtons()
     }, 50);
+  }
+
+  openDialog() {
+    this.editClicked.emit();
   }
 
 
@@ -54,32 +99,7 @@ export class FilterChipRowComponent implements AfterViewInit, OnChanges, OnDestr
 
   }
 
-  ngAfterViewInit() {
 
-    const scrollEl = this.scrollContainer.nativeElement;
-
-    scrollEl.addEventListener('scroll',
-      () => this.updateScrollButtons()
-    );
-
-    window.addEventListener('resize',
-      () => this.updateScrollButtons()
-    );
-
-    this.updateScrollButtons();
-  }
-
-  ngOnDestroy(): void {
-    const scrollEl = this.scrollContainer.nativeElement;
-
-    scrollEl.removeEventListener('scroll',
-      () => this.updateScrollButtons()
-    );
-
-    window.removeEventListener('resize',
-      () => this.updateScrollButtons()
-    )
-  }
 
   private updateScrollButtons() {
     const el = this.scrollContainer.nativeElement;

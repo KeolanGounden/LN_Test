@@ -1,28 +1,14 @@
-/* Scope all overrides to this component only */
-app-search-bar {
-	--searchbar-outline-radius: var(--mat-form-field-outlined-container-shape, var(--mat-sys-corner-small));
+.form .mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 10px;
+border-top-left-radius: 10px;
+border-bottom-left-radius: 10px; 
+border-top-right-radius: 10px;
+border-bottom-right-radius: 10px; 
+  background-color: var(--mat-table-background-color, var(--mat-sys-surface))
+}
 
-	/* Trailing (right) piece: rounded on right corners only */
-	.mdc-text-field--outlined .mdc-notched-outline__trailing,
-	.mdc-text-field--outlined .mat-mdc-notch-piece.trailing {
-		flex-grow: 1;
-		border-left: none !important;
-		border-right: 1px solid currentcolor !important;
-		border-top-left-radius: 0 !important;
-		border-bottom-left-radius: 0 !important;
-		border-top-right-radius: var(--searchbar-outline-radius) !important;
-		border-bottom-right-radius: var(--searchbar-outline-radius) !important;
-	}
-
-	/* Leading (left) piece: rounded on left corners only */
-	.mdc-text-field--outlined .mdc-notched-outline__leading,
-	.mdc-text-field--outlined .mat-mdc-notch-piece.leading {
-		border-right: none !important;
-		border-left: 1px solid currentcolor !important;
-		border-top-right-radius: 0 !important;
-		border-bottom-right-radius: 0 !important;
-		border-top-left-radius: var(--searchbar-outline-radius) !important;
-		border-bottom-left-radius: var(--searchbar-outline-radius) !important;
-	}
-
+.cus-button {
+  ::ng-deep span.mat-mdc-button-touch-target {
+    height: unset;
+  }
 }
