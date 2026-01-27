@@ -28,10 +28,22 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<ProductResponse>> GetById(Guid id)
+        public async Task<ActionResult<ProductResponse>> GetById()
         {
+            // manually pull from route
+            if (!RouteData.Values.TryGetValue("id", out var idObj) || idObj is null)
+            {
+                return BadRequest("Missing id");
+            }
+
+            if (!Guid.TryParse(idObj.ToString(), out var id))
+            {
+                return BadRequest("Invalid id format");
+            }
+
             var resp = await _productService.GetByIdAsync(id);
             if (resp == null) return NotFound();
+
             return Ok(resp);
         }
 
