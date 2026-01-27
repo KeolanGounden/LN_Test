@@ -111,55 +111,6 @@
         }
       }
     },
-    "/api/platform-content/search-takealot": {
-      "post": {
-        "tags": [
-          "PlatformContent"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotSearchRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotSearchRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/TakealotSearchRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/TakealotContentResponsePagedResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TakealotContentResponsePagedResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TakealotContentResponsePagedResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/products": {
       "get": {
         "tags": [
@@ -273,17 +224,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotContentResponse"
+                "$ref": "#/components/schemas/ProductResponse"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotContentResponse"
+                "$ref": "#/components/schemas/ProductResponse"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotContentResponse"
+                "$ref": "#/components/schemas/ProductResponse"
               }
             }
           },
@@ -354,17 +305,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotContentResponse"
+                "$ref": "#/components/schemas/ProductResponse"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotContentResponse"
+                "$ref": "#/components/schemas/ProductResponse"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/TakealotContentResponse"
+                "$ref": "#/components/schemas/ProductResponse"
               }
             }
           },
@@ -605,95 +556,6 @@
                 "nullable": true
               },
               "inStock": {
-                "type": "boolean",
-                "nullable": true
-              }
-            },
-            "additionalProperties": false
-          }
-        ]
-      },
-      "TakealotContentResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastUpdated": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "url": {
-            "type": "string",
-            "nullable": true
-          },
-          "productIdentifier": {
-            "type": "string",
-            "nullable": true
-          },
-          "inStock": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "TakealotContentResponsePagedResult": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TakealotContentResponse"
-            },
-            "nullable": true
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "TakealotSearchRequest": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/PaginationParams"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "nullable": true
-              },
-              "last_updated_start": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "last_updated_end": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "product_id": {
-                "type": "string",
-                "nullable": true
-              },
-              "in_stock": {
                 "type": "boolean",
                 "nullable": true
               }

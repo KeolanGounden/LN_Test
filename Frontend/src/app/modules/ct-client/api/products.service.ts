@@ -20,8 +20,6 @@ import { Observable }                                        from 'rxjs';
 import { ProductResponse } from '../model/product-response';
 // @ts-ignore
 import { ProductResponsePagedResult } from '../model/product-response-paged-result';
-// @ts-ignore
-import { TakealotContentResponse } from '../model/takealot-content-response';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -232,19 +230,19 @@ export class ProductsService extends BaseService {
 
     /**
      * @param id 
-     * @param takealotContentResponse 
+     * @param productResponse 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiProductsIdPut(id: string, takealotContentResponse: TakealotContentResponse, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiProductsIdPut(id: string, takealotContentResponse: TakealotContentResponse, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiProductsIdPut(id: string, takealotContentResponse: TakealotContentResponse, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiProductsIdPut(id: string, takealotContentResponse: TakealotContentResponse, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiProductsIdPut(id: string, productResponse: ProductResponse, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiProductsIdPut(id: string, productResponse: ProductResponse, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiProductsIdPut(id: string, productResponse: ProductResponse, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiProductsIdPut(id: string, productResponse: ProductResponse, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiProductsIdPut.');
         }
-        if (takealotContentResponse === null || takealotContentResponse === undefined) {
-            throw new Error('Required parameter takealotContentResponse was null or undefined when calling apiProductsIdPut.');
+        if (productResponse === null || productResponse === undefined) {
+            throw new Error('Required parameter productResponse was null or undefined when calling apiProductsIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -287,7 +285,7 @@ export class ProductsService extends BaseService {
         return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: takealotContentResponse,
+                body: productResponse,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -299,16 +297,16 @@ export class ProductsService extends BaseService {
     }
 
     /**
-     * @param takealotContentResponse 
+     * @param productResponse 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiProductsPost(takealotContentResponse: TakealotContentResponse, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiProductsPost(takealotContentResponse: TakealotContentResponse, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiProductsPost(takealotContentResponse: TakealotContentResponse, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiProductsPost(takealotContentResponse: TakealotContentResponse, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (takealotContentResponse === null || takealotContentResponse === undefined) {
-            throw new Error('Required parameter takealotContentResponse was null or undefined when calling apiProductsPost.');
+    public apiProductsPost(productResponse: ProductResponse, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiProductsPost(productResponse: ProductResponse, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiProductsPost(productResponse: ProductResponse, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiProductsPost(productResponse: ProductResponse, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (productResponse === null || productResponse === undefined) {
+            throw new Error('Required parameter productResponse was null or undefined when calling apiProductsPost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -351,7 +349,7 @@ export class ProductsService extends BaseService {
         return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: takealotContentResponse,
+                body: productResponse,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

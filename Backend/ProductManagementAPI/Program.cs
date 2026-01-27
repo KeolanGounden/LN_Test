@@ -2,8 +2,9 @@ using ProductManagementAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using ProductManagementAPI.Services;
 using ProductManagementAPI.Utils;
-using ChangeTrackerModel.DatabaseContext;
 using ProductManagementAPI.Repositories;
+using ProductManagementAPI.Entities;
+using ProductManagementAPI.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,26 +18,22 @@ var configuration = builder.Configuration;
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
 {
+    options.DocumentFilter<AddQueryModelsDocumentFilter>();
     options.RequestBodyFilter<RequestBodyFilter>();
     options.UseAllOfForInheritance();
 });
 
-services.AddDbContext<MySqlContext>(options => options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")), x => x.MigrationsAssembly("ProductManagementAPI").UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)), ServiceLifetime.Scoped);
-
 services.AddControllers();
 
-services.AddScoped<IPlatformContentService, PlatformContentService>();
-// register product search engine as open-generic for DI
 services.AddTransient(typeof(IProductSearchEngine<>), typeof(ProductSearchEngine<>));
 
 // In-memory EF context for products
-services.AddDbContext<ProductManagementAPI.Data.InMemoryDbContext>(options => options.UseInMemoryDatabase("ProductsDb"), ServiceLifetime.Scoped);
+services.AddDbContext<InMemoryDbContext>(options => options.UseInMemoryDatabase("ProductsDb"), ServiceLifetime.Scoped);
 services.AddScoped<ProductEntityRepository>();
-services.AddScoped<IRepository<ProductManagementAPI.Entities.ProductEntity>>(sp => sp.GetRequiredService<ProductEntityRepository>());
+services.AddScoped<IRepository<ProductEntity>>(sp => sp.GetRequiredService<ProductEntityRepository>());
 services.AddScoped<ProductService>();
 services.AddScoped<DatabaseSeeder>();
 // repositories
-services.AddScoped<IProductRepository, ProductRepository>();
 services.AddSingleton<ICategoryRepository,CategoryRepository>();
 // services
 services.AddScoped<ICategoryService, CategoryService>();
@@ -59,7 +56,7 @@ var app = builder.Build();
 // seed in-memory database
 using (var scope = app.Services.CreateScope())
 {
-    var seeder = scope.ServiceProvider.GetService<ProductManagementAPI.Services.DatabaseSeeder>();
+    var seeder = scope.ServiceProvider.GetService<DatabaseSeeder>();
     seeder?.SeedAsync().GetAwaiter().GetResult();
 }
 

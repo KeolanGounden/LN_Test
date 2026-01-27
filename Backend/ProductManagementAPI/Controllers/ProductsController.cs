@@ -36,7 +36,7 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TakealotContentResponse request)
+        public async Task<IActionResult> Create([FromBody] ProductResponse request)
         {
             if (request is null)
                 return BadRequest("Request body is required.");
@@ -48,11 +48,11 @@ namespace ProductManagementAPI.Controllers
             {
                 Id = request.Id == Guid.Empty ? Guid.NewGuid() : request.Id,
                 Name = request.Name,
-                Description = string.Empty,
-                SKU = request.ProductIdentifier,
-                Price = 0,
-                Quantity = request.InStock ? 1 : 0,
-                CategoryId = null,
+                Description = request.Description,
+                SKU = request.SKU,
+                Price = request.Price,
+                Quantity = request.Quantity,
+                CategoryId = request.CategoryId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -61,7 +61,7 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] TakealotContentResponse request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ProductResponse request)
         {
             if (request is null)
                 return BadRequest("Request body is required.");
@@ -72,8 +72,11 @@ namespace ProductManagementAPI.Controllers
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return NotFound();
             entity.Name = request.Name;
-            entity.SKU = request.ProductIdentifier;
-            entity.Quantity = request.InStock ? 1 : 0;
+            entity.Description = request.Description;
+            entity.Price = request.Price;
+            entity.SKU = request.SKU;
+            entity.Quantity = request.Quantity;
+            entity.CategoryId = request.CategoryId;
             entity.UpdatedAt = DateTime.UtcNow;
             await _repo.UpdateAsync(entity);
             return NoContent();

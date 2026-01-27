@@ -35,10 +35,6 @@
     </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProductManagementModel\ProductManagementModel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Exceptions\" />
   </ItemGroup>
 

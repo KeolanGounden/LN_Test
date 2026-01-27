@@ -21,7 +21,7 @@ import { DialogButtonText } from '../../models/dialog-button-text.enum';
     selector: 'app-confirmation-dialog',
     templateUrl: './confirmation-dialog.component.html',
     styleUrls: ['./confirmation-dialog.component.scss'],
-    imports: [CdkScrollable, MatChipsModule, CommonModule,MatButtonModule,MatDialogContent,  MatTable,  MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatChipListbox, MatChip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatError, MatDialogActions, MatButton, MatCardModule,]
+    imports: [CdkScrollable, MatChipsModule, CommonModule,MatButtonModule,MatDialogContent,MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatError, MatDialogActions, MatButton, MatCardModule,]
 })
 export class ConfirmationDialogComponent implements OnInit {
 

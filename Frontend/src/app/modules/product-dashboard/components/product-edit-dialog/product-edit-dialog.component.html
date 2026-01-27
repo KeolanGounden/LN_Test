@@ -31,16 +31,31 @@
                             <mat-error>Required</mat-error>
                         </mat-form-field>
 
-                        <mat-form-field>
+                          <mat-form-field>
                             <mat-label>Price</mat-label>
-                            <input formControlName="price" matInput />
-                            <mat-error>Required</mat-error>
-                        </mat-form-field>
+                            <input matInput formControlName="price" type="number" step="any" />
+
+                            @if (form.controls['price'].hasError('required')) {
+                              <mat-error>Required</mat-error>
+                            }
+
+                            @if (form.controls['price'].hasError('pattern')) {
+                              <mat-error>Invalid number</mat-error>
+                            }
+                          </mat-form-field>
 
                         <mat-form-field>
                             <mat-label>Quantity</mat-label>
-                            <input formControlName="quantity" matInput />
-                            <mat-error>Required</mat-error>
+                            <input formControlName="quantity" matInput type="number" step="1"/>
+
+                              @if (form.controls['quantity'].hasError('pattern')) {
+                              <mat-error>Invalid number</mat-error>
+                            }
+                             @if (form.controls['quantity'].hasError('required')) {
+                              <mat-error>Required</mat-error>
+                            }
+
+                          
                         </mat-form-field>
 
                        

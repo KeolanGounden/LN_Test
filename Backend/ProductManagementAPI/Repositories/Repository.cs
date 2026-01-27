@@ -1,6 +1,5 @@
 using ProductManagementAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using ChangeTrackerModel.DatabaseContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +9,9 @@ namespace ProductManagementAPI.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected readonly MySqlContext _context;
+
         protected readonly DbSet<T> _dbSet;
 
-        public Repository(MySqlContext context)
-        {
-            _context = context;
-            _dbSet = _context.Set<T>();
-        }
 
         public IQueryable<T> Query() => _dbSet.AsNoTracking();
 
@@ -34,13 +28,12 @@ namespace ProductManagementAPI.Repositories
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+
         }
 
         public async Task DeleteAsync(Guid id)
@@ -48,7 +41,6 @@ namespace ProductManagementAPI.Repositories
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) return;
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
         }
     }
 }

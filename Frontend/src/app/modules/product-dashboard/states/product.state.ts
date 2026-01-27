@@ -2,20 +2,27 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject, Observable, of } from 'rxjs';
 import { switchMap, tap, catchError, finalize, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { PlatformContentService, ProductResponse, ProductResponsePagedResult, ProductSearchRequest, ProductsService, TakealotContentResponse, TakealotContentResponsePagedResult, TakealotSearchRequest } from "../../ct-client";
+import { ProductResponse, ProductResponsePagedResult, ProductSearchRequest, ProductsService } from "../../ct-client";
 
 @Injectable({ providedIn: 'root' })
 export class ProductState {
+
+  private lastSearchRequest: ProductSearchRequest | undefined;
+
   private productSubject = new BehaviorSubject<ProductResponsePagedResult | undefined>(undefined);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   private isDeletingSubject = new BehaviorSubject<boolean>(false);
   private deleteDoneSubject = new Subject<boolean>();
-  private lastSearchRequest: ProductSearchRequest | undefined;
   private productDetailSubject = new BehaviorSubject<ProductResponse | undefined>(undefined);
   private isGettingProductSubject = new BehaviorSubject<boolean>(false);
+
+  private isCreatingSubject =  new BehaviorSubject<boolean>(false);
+
   private getProductTrigger$ = new Subject<string>();
   private searchTrigger$ = new Subject<ProductSearchRequest>();
   private deleteTrigger$ = new Subject<string>();
+  private createTrigger$ = new Subject<ProductResponse>();
+  private editTrigger$ = new Subject<ProductResponse>();
 
   
 
@@ -80,6 +87,52 @@ export class ProductState {
         );
       })
     ).subscribe();
+
+
+    this.createTrigger$.pipe(
+      switchMap((req:ProductResponse) => {
+        this.isCreatingSubject.next(true);
+        return this._productService.apiProductsPost(req).pipe(
+          tap(() => {
+            this._snackBar.open('Product added', 'Close', { duration: 3000 });
+            this.isCreatingSubject.next(true);
+            // re-run last search if available
+            if (this.lastSearchRequest) {
+              this.searchTrigger$.next(this.lastSearchRequest);
+            }
+          }),
+          catchError(error => {
+            this._snackBar.open(`Failed to create product: ${error.message}`, 'Close', { duration: 5000 });
+            this.isCreatingSubject.next(false);
+            return of(undefined);
+          }),
+          finalize(() => this.isCreatingSubject.next(false))
+        );
+      })
+    ).subscribe();
+
+    this.editTrigger$.pipe(
+      switchMap((req:ProductResponse) => {
+        this.isCreatingSubject.next(true);
+         return this._productService.apiProductsIdPut(req.id ?? "", req).pipe(
+          tap(() => {
+            this._snackBar.open('Product edited', 'Close', { duration: 3000 });
+            this.isCreatingSubject.next(true);
+            // re-run last search if available
+            if (this.lastSearchRequest) {
+              this.searchTrigger$.next(this.lastSearchRequest);
+            }
+          }),
+          catchError(error => {
+            this._snackBar.open('Failed to edit product', 'Close', { duration: 5000 });
+            this.isCreatingSubject.next(false);
+            return of(undefined);
+          }),
+          finalize(() => this.isCreatingSubject.next(false))
+        );
+      })
+    ).subscribe();
+
   }
 
   // Observables 
@@ -123,6 +176,14 @@ export class ProductState {
 
   delete(id: string): void {
     this.deleteTrigger$.next(id);
+  }
+
+  create(req: ProductResponse): void {
+    this.createTrigger$.next(req);
+  }
+
+  edit(req: ProductResponse): void {
+    this.editTrigger$.next(req);
   }
 
   getById(id: string): void {

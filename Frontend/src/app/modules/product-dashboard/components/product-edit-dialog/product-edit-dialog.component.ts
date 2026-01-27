@@ -6,7 +6,7 @@ import { ButtonAction, SlidingDialogActionButtonConfig } from '../../../shared/m
 import { TemplateIdDirective } from '../../../shared/directives/template-id-directive.directive';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ProductResponse, TakealotContentResponse } from '../../../ct-client';
+import { ProductResponse } from '../../../ct-client';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInput, MatLabel } from "@angular/material/input";
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -65,7 +65,6 @@ export class ProductEditDialogComponent {
 
   item: ProductResponse | undefined;
   @ViewChild(SlidingFormComponent) slidingForm!: SlidingFormComponent;
-  @ViewChild('menuTemplate', { static: true }) menuTemplate!: TemplateRef<any>;
 
 
   readonly nodes$ = this.categoriesState.treeNodes$;
@@ -82,22 +81,11 @@ export class ProductEditDialogComponent {
 
     mainButtons: SlidingDialogActionButtonConfig[] = [
     { text: 'Close', type: 'basic', action: ButtonAction.CancelClose },
-    { text: 'Save', type: 'flat', action: ButtonAction.SubmitClose }
+    { text: 'Save', type: 'flat', action: ButtonAction.SubmitClose,  
+      customAction: () => this.submit(),
+      disabled: () => !this.formValid()
+       }
   ];
-
-  editButtons: SlidingDialogActionButtonConfig[] = [
-    {
-      text: 'Cancel', type: 'basic', action: ButtonAction.CancelPrevious, customAction: () => {
-
-      }
-    },
-    {
-      text: 'Save', type: 'flat', action: ButtonAction.SubmitPrevious, customAction: () => {
-      }, disabled: () => { return !this.form.valid }, hide: () => { return this.form.disabled }
-    }
-  ];
-
-
 
   details: HeaderConfig = {
     id: 'details',
@@ -123,14 +111,21 @@ category: HeaderConfig = {
  
     categoriesState.fetchCategoriesTree();
 
+    this.form = this.fb.group({
+      name:  [null, [Validators.required]],
+      desc: [null, [Validators.required]],
+      sku: [null, [Validators.required]],
+      price: [null, [Validators.required, Validators.pattern(/^-?\d+(\.\d+)?$/)]],
+      quantity: [null, [Validators.required,  Validators.pattern(/^\d+$/) ]]
+    });
+
     if(productId)
     {
        this.productState.getById(productId);
        this.views[0].title = `Edit Product`;
-      
-    }
 
-    this.productState.productDetail$.subscribe(content=>{
+       this.productState.productDetail$.subscribe(content=>{
+
       this.item = content;
       this.views[0].title = `Edit Product - ${content?.name}`;
 
@@ -145,22 +140,53 @@ category: HeaderConfig = {
         name: content?.name,
         desc: content?.description,  
         sku: content?.sku,
-        categoryId: content?.categoryId,
         price: content?.price,
         quantity: content?.quantity
       });
     });
 
-    this.form = this.fb.group({
-      name:  [null, [Validators.required]],
-      desc: [null, [Validators.required]],
-      sku: [null, [Validators.required]],
-      categoryId: [null, [Validators.required]],
-      price: [null, [Validators.required]],
-      quantity: [null, [Validators.required]]
-    });
+      
+    }
 
 
+  }
+
+  formValid():boolean
+  {
+     let category = this.selected()
+     
+     if(category[0] && this.form.valid )
+     {
+      return true
+     }
+
+     return false
+  }
+
+  submit()
+  {
+
+    let req:ProductResponse = {
+      name: this.form.controls['name'].value,
+      description: this.form.controls['desc'].value,
+      sku: this.form.controls['sku'].value,
+      price: this.form.controls['price'].value,
+      quantity: this.form.controls['quantity'].value,
+      categoryId: this.selected()[0]
+    }
+
+    if(this.item)
+    {
+        req.id = this.item.id
+
+        this.productState.edit(req)
+
+    }
+    else
+    {
+        this.productState.create(req)
+    }
+    
   }
 
 

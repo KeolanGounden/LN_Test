@@ -1,8 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MtxGrid, MtxGridCellTemplate, MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
-import { DashboardService } from '../../states/dashboard.state';
 import { Observable } from 'rxjs';
-import { CategoryDto, ProductResponse, ProductSearchRequest, TakealotContentResponse, TakealotSearchRequest } from '../../../ct-client';
+import { CategoryDto, ProductResponse, ProductSearchRequest} from '../../../ct-client';
 import { AsyncPipe } from '@angular/common';
 import { PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
@@ -41,7 +40,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   observer: ResizeObserver | undefined;
   gridHeight = "100vh"
 
-  queryParams: TakealotSearchRequest = { pageSize: 25, pageNumber: 0 }
+  queryParams: ProductSearchRequest = { pageSize: 25, pageNumber: 0 }
 
   headerIcon: boolean = true
 
@@ -87,7 +86,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   actionButtons: ButtonConfig[] = [
 
     {
-      icon: "add_task",
+      icon: "add",
       action: () =>  this.openViewDialog() ,
       type: ButtonType.Flat,
       tooltip: "Add Product",
@@ -115,7 +114,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
 
   loading$: Observable<boolean> = this.dashboardService.isLoading$
   productContentCount$: Observable<number> = this.dashboardService.productTotalCount$
-  productContent$: Observable<TakealotContentResponse[] | undefined | null> = this.dashboardService.productItems$
+  productContent$: Observable<ProductResponse[] | undefined | null> = this.dashboardService.productItems$
 
   id: ProductKeys = 'id';
   name: ProductKeys = 'name';
@@ -131,6 +130,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
   columns: MtxGridColumn[] = [
     { header: 'Identifier', field: this.id, disabled: true },
     { header: 'Name', field: this.name },
+    { header: 'Description', field: this.description },
     {
       header: 'Last Updated', field: this.lastUpdated, formatter(rowData, colDef) {
         return new Date(rowData.updatedAt).toLocaleDateString()
@@ -277,7 +277,7 @@ export class ProductDashboardWrapperComponent implements OnInit, AfterViewInit, 
     this.dashboardService.search(request)
   }
 
-  openViewDialog(rowData?: TakealotContentResponse)
+  openViewDialog(rowData?: ProductResponse)
   {
 
      this.dialog.open(ProductEditDialogComponent, {

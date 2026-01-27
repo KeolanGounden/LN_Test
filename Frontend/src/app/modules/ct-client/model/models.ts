@@ -5,6 +5,3 @@ export * from './pagination-params';
 export * from './product-response';
 export * from './product-response-paged-result';
 export * from './product-search-request';
-export * from './takealot-content-response';
-export * from './takealot-content-response-paged-result';
-export * from './takealot-search-request';
